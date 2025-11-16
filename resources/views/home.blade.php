@@ -1,109 +1,91 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - SuaraGO</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet"/>
+@extends('layouts.app')
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        /* CSS untuk garis di Alur Proses */
-        .timeline-step:not(:last-child)::after {
+@section('title', 'Dashboard - SuaraGO')
+@push('styles')
+<style>
+    .timeline-container {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    @media (min-width: 768px) {
+        .timeline-container::before {
             content: '';
             position: absolute;
-            top: 1.25rem; /* Menyesuaikan dengan 'h-10' icon */
-            left: 50%;
-            width: 200%; /* Lebar garis (sesuaikan dengan 'gap-x-4' di parent) */
-            height: 2px;
-            background-color: #e0e0e0;
-            transform: translateX(-50%);
+            top: 3rem;
+            left: 10%;
+            width: 80%;
+            height: 4px;
+            background-color: #e5e7eb;
             z-index: 1;
         }
-    </style>
-</head>
-<body class="bg-gray-50">
+    }
+    .timeline-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 0 0.5rem;
+        width: 20%;
+        position: relative;
+        z-index: 2;
+    }
+    .timeline-icon-wrapper {
+        position: relative;
+        z-index: 2;
+        width: 6rem;
+        height: 6rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9999px;
+        background-color: #f9fafb; /* bg-gray-50 */
+        padding: 0.5rem;
+    }
+    .timeline-icon-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    @media (max-width: 767px) {
+        .timeline-container {
+            min-width: 0;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.5rem;
+            padding-left: 1rem;
+            justify-content: flex-start;
+        }
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            top: 1.25rem;
+            bottom: 1.25rem;
+            left: 2.25rem;
+            width: 4px;
+            height: auto;
+            background-color: #e5e7eb;
+            z-index: 1;
+        }
+        .timeline-step {
+            flex-direction: row;
+            align-items: center;
+            text-align: left;
+            width: 100%;
+            padding: 0;
+            gap: 1.5rem;
+        }
+        .timeline-step:last-child { padding-bottom: 0; }
+        .timeline-icon-wrapper { width: 2.5rem; height: 2.5rem; flex-shrink: 0; }
+        .timeline-step h3 { margin-top: 0; font-size: 1rem; line-height: 1.2; }
+        .timeline-step p { max-w-none; font-size: 0.875rem; }
+    }
+</style>
+@endpush
 
-    <nav class="navbar bg-[#1977B1] shadow-sm sticky top-0 z-40 transition-transform duration-300">
-        <div class="container mx-auto px-5 md:px-20 flex justify-between items-center py-4">
-            
-            <a href="#beranda">
-                <img src="{{ asset('assets/images/logo-suarago.png') }}" alt="Logo Suara Rakyat" class="h-12 md:h-14">
-            </a>
-            
-            <ul class="hidden md:flex items-center space-x-8">
-                <li><a href="#beranda" class="font-medium text-[#ffffff] hover:text-blue-400 transition-colors">Beranda</a></li>
-                <li><a href="#tentang" class="font-medium text-[#ffffff] hover:text-blue-400 transition-colors">Tentang</a></li>
-                <li><a href="#layanan" class="font-medium text-[#ffffff] hover:text-blue-400 transition-colors">Layanan</a></li>
-                
-                <li>
-                    <a href="#" class="font-medium text-white flex items-center gap-2">
-                        <i class="ri-user-fill"></i>
-                        {{ Auth::user()->full_name ?? 'Pengguna' }}
-                    </a>
-                </li>
-                <li>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <a href="{{ route('logout') }}" 
-                           onclick="event.preventDefault(); this.closest('form').submit();"
-                           class="font-medium text-white hover:text-blue-400 transition-colors"
-                           title="Logout">
-                           <i class="ri-logout-box-r-line text-xl"></i>
-                        </a>
-                    </form>
-                </li>
-            </ul>
 
-            <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-white focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
-
-        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg border-t border-gray-100">
-            <ul class="flex flex-col">
-                <li><a href="#beranda" class="mobile-menu-link block py-3 px-5 text-gray-600 hover:bg-blue-50">Beranda</a></li>
-                <li><a href="#tentang" class="mobile-menu-link block py-3 px-5 text-gray-600 hover:bg-blue-50">Tentang</a></li>
-                <li><a href="#layanan" class="mobile-menu-link block py-3 px-5 text-gray-600 hover:bg-blue-50">Layanan</a></li>
-                
-                <li class="border-t border-gray-100">
-                    <span class="block py-3 px-5 text-gray-800 font-semibold">
-                        {{ Auth::user()->full_name ?? 'Pengguna' }}
-                    </span>
-                </li>
-                <li>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <a href="{{ route('logout') }}" 
-                           onclick="event.preventDefault(); this.closest('form').submit();"
-                           class="mobile-menu-link block py-3 px-5 text-red-600 hover:bg-red-50">
-                            Logout
-                        </a>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
+@section('content')
     <header id="beranda" class="bg-blue-50 min-h-screen flex items-center pt-16 md:pt-0">
         <div class="container mx-auto px-5 py-20">
             <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-10">
@@ -118,7 +100,7 @@
                         <a href="#layanan" class="inline-block py-3 px-8 rounded-full font-semibold bg-[#3996AF] text-white hover:bg-[#145D71] transition-all duration-300">
                             Lihat Selengkapnya <i class="ri-arrow-right-line"></i>
                         </a>
-                        <a href="#masuk" class="inline-block py-3 px-8 rounded-full font-semibold bg-[#3996AF] text-white hover:bg-[#145D71] transition-all duration-300">
+                        <a href="{{ route('laporan.create', ['tipe' => 'pengaduan']) }}" class="inline-block py-3 px-8 rounded-full font-semibold bg-[#3996AF] text-white hover:bg-[#145D71] transition-all duration-300">
                             Buat Laporan <i class="ri-edit-line"></i>
                         </a>
                     </div>
@@ -139,17 +121,18 @@
                 
                 <div class="flex flex-col md:flex-row justify-center items-center gap-8">
                     
-                    <a href="#masuk" class="block w-11/12 md:w-auto transition-all duration-300 hover:-translate-y-2">
+                    <a href="{{ route('laporan.create', ['tipe' => 'aspirasi']) }}" class="block w-11/12 md:w-auto transition-all duration-300 hover:-translate-y-2">
                         <div class="card-layanan bg-white rounded-xl shadow-md w-full md:w-[420px] overflow-hidden hover:shadow-xl">
                             <img src="{{ asset('assets/images/layanan-aspirasi.jpg') }}" alt="Laporan Aspirasi" class="w-full h-64 object-cover bg-gray-200">
-                            <div class="layanan-text bg-[#347ab7] p-8">
+                            <div class="layanan-text bg-[#347ab7] p-
+                            8">
                                 <h3 class="text-2xl font-semibold text-white mb-3">Laporan Aspirasi</h3>
                                 <p class="text-blue-100 leading-relaxed">Sampaikan ide, gagasan, atau masukan konstruktif Anda untuk turut serta dalam perbaikan dan pengembangan layanan publik.</p>
                             </div>
                         </div>
                     </a>
                     
-                    <a href="#masuk" class="block w-11/12 md:w-auto transition-all duration-300 hover:-translate-y-2">
+                    <a href="{{ route('laporan.create', ['tipe' => 'pengaduan']) }}" class="block w-11/12 md:w-auto transition-all duration-300 hover:-translate-y-2">
                         <div class="card-layanan bg-white rounded-xl shadow-md w-full md:w-[420px] overflow-hidden hover:shadow-xl">
                             <img src="{{ asset('assets/images/layanan-pengaduan.png') }}" alt="Laporan Pengaduan" class="w-full h-64 object-cover bg-gray-200">
                             <div class="layanan-text bg-[#347ab7] p-8">
@@ -164,47 +147,66 @@
         </section>
 
         <section id="alur-proses" class="py-20 bg-gray-50">
-            <div class="container mx-auto px-5">
+            <div class="container mx-auto px-5 timeline-container-wrapper">
                 <h2 class="text-3xl lg:text-4xl font-bold text-center text-gray-800 mb-16">
                     Alur Proses Laporan
                 </h2>
                 
-                <div class="flex flex-col md:flex-row justify-center items-start md:gap-x-4">
+                <div class="timeline-container">
                     
-                    <div class="timeline-step relative flex-1 flex flex-col items-center text-center p-4">
-                        <div class="relative z-10 w-10 h-10 flex items-center justify-center bg-blue-600 text-white rounded-full font-bold text-lg">1</div>
-                        <h3 class="font-semibold text-lg text-gray-800 mt-4 mb-2">Tulis Laporan</h3>
-                        <p class="text-gray-600 text-sm max-w-xs">Laporkan keluhan atau aspirasi Anda dengan jelas dan lengkap.</p>
+                    <div class="timeline-step">
+                        <div class="timeline-icon-wrapper bg-teal-100">
+                            <img src="{{ asset('assets/images/icon-tahapan-1.png') }}" alt="Tulis Laporan">
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg text-gray-800 mt-4 mb-2">Tulis Laporan Anda</h3>
+                            <p class="text-gray-600 text-sm">Laporkan keluhan atau aspirasi anda dengan jelas dan lengkap.</p>
+                        </div>
                     </div>
 
-                    <div class="timeline-step relative flex-1 flex flex-col items-center text-center p-4">
-                        <div class="relative z-10 w-10 h-10 flex items-center justify-center bg-blue-600 text-white rounded-full font-bold text-lg">2</div>
-                        <h3 class="font-semibold text-lg text-gray-800 mt-4 mb-2">Proses Verifikasi</h3>
-                        <p class="text-gray-600 text-sm max-w-xs">Tim kami akan memverifikasi kebenaran dan kelengkapan laporan Anda.</p>
+                    <div class="timeline-step">
+                        <div class="timeline-icon-wrapper bg-red-100">
+                             <img src="{{ asset('assets/images/icon-tahapan-2.png') }}" alt="Proses Verifikasi">
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg text-gray-800 mt-4 mb-2">Proses Verifikasi</h3>
+                            <p class="text-gray-600 text-sm">Dalam 3 hari, laporan Anda akan diverifikasi dan diteruskan kepada instansi berwenang.</p>
+                        </div>
                     </div>
 
-                    <div class="timeline-step relative flex-1 flex flex-col items-center text-center p-4">
-                        <div class="relative z-10 w-10 h-10 flex items-center justify-center bg-blue-600 text-white rounded-full font-bold text-lg">3</div>
-                        <h3 class="font-semibold text-lg text-gray-800 mt-4 mb-2">Proses Tindak Lanjut</h3>
-                        <p class="text-gray-600 text-sm max-w-xs">Laporan Anda akan diteruskan ke instansi terkait untuk ditindaklanjuti.</p>
+                    <div class="timeline-step">
+                        <div class="timeline-icon-wrapper bg-yellow-100">
+                             <img src="{{ asset('assets/images/icon-tahapan-3.png') }}" alt="Proses Tindak Lanjut">
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg text-gray-800 mt-4 mb-2">Proses Tindak Lanjut</h3>
+                            <p class="text-gray-600 text-sm">Dalam 5 hari, instansi akan menindaklanjuti dan membalas laporan Anda.</p>
+                        </div>
                     </div>
 
-                    <div class="timeline-step relative flex-1 flex flex-col items-center text-center p-4">
-                        <div class="relative z-10 w-10 h-10 flex items-center justify-center bg-blue-600 text-white rounded-full font-bold text-lg">4</div>
-                        <h3 class="font-semibold text-lg text-gray-800 mt-4 mb-2">Beri Tanggapan</h3>
-                        <p class="text-gray-600 text-sm max-w-xs">Anda dapat melihat tanggapan dan status laporan Anda secara berkala.</p>
+                    <div class="timeline-step">
+                        <div class="timeline-icon-wrapper bg-green-100">
+                             <img src="{{ asset('assets/images/icon-tahapan-4.png') }}" alt="Beri Tanggapan">
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg text-gray-800 mt-4 mb-2">Beri Tanggapan</h3>
+                            <p class="text-gray-600 text-sm">Anda dapat menanggapi kembali balasan yang diberikan oleh instansi dalam waktu 10 hari.</p>
+                        </div>
                     </div>
 
-                    <div class="timeline-step relative flex-1 flex flex-col items-center text-center p-4">
-                        <div class="relative z-10 w-10 h-10 flex items-center justify-center bg-green-500 text-white rounded-full font-bold text-lg">5</div>
-                        <h3 class="font-semibold text-lg text-gray-800 mt-4 mb-2">Selesai</h3>
-                        <p class="text-gray-600 text-sm max-w-xs">Laporan Anda telah ditindaklanjuti dan dianggap selesai.</p>
+                    <div class="timeline-step">
+                        <div class="timeline-icon-wrapper bg-blue-100">
+                             <img src="{{ asset('assets/images/icon-tahapan-5.png') }}" alt="Selesai">
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg text-gray-800 mt-4 mb-2">Selesai</h3>
+                            <p class="text-gray-600 text-sm">Laporan Anda akan terus ditindaklanjuti hingga terselesaikan.</p>
+                        </div>
                     </div>
 
                 </div>
             </div>
         </section>
-
 
         <section id="tentang" class="py-20 bg-white">
             <div class="container mx-auto px-5">
@@ -223,13 +225,11 @@
         </section>
 
         <section id="laporan-terhangat" class="py-20 bg-gray-50">
-            <div class="container mx-auto px-5">
+            <div class="container mx-auto w-full px-5 md:px-20">
                 <h2 class="text-3xl lg:text-4xl font-bold text-center text-gray-800 mb-12">
                     Laporan Terhangat
                 </h2>
-
-                <div class="max-w-3xl mx-auto space-y-6">
-                    
+                <div class="space-y-6">
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
                         <div class="p-6">
                             <div class="flex items-center mb-4">
@@ -250,110 +250,8 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <div class="p-6">
-                            <div class="flex items-center mb-4">
-                                <img class="w-10 h-10 rounded-full object-cover" src="{{ asset('assets/images/profil-admin.jpg') }}" alt="Avatar Pengguna">
-                                <div class="ml-3">
-                                    <h4 class="font-semibold text-gray-800">Pengguna Lain</h4>
-                                    <span class="text-sm text-gray-500">5 jam lalu</span>
-                                </div>
-                            </div>
-                            <p class="text-gray-700 leading-relaxed">
-                                Mohon aspirasi untuk penambahan lampu penerangan jalan di area taman kota. Saat malam hari sangat gelap... 
-                                <a href="#" class="text-blue-600 hover:underline">Baca selengkapnya</a>
-                            </p>
-                            <div class="flex justify-end items-center gap-4 text-gray-500 mt-4 text-sm">
-                                <span class="flex items-center gap-1"><i class="ri-thumb-up-line"></i> 32 Suka</span>
-                                <span class="flex items-center gap-1"><i class="ri-message-2-line"></i> 2 Komentar</span>
-                                <span class="flex items-center gap-1"><i class="ri-eye-line"></i> 180 Dilihat</span>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </section>
-
     </main>
-
-    <footer class="py-10 bg-gray-800 text-center">
-        <div class="container mx-auto px-5">
-            <p class="text-gray-300">&copy; 2025 Kelompok 5. Hak Cipta Dilindungi.</p>
-        </div>
-    </footer>
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            // --- Script Mobile Menu & Navbar Scroll ---
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
-
-            if (mobileMenuButton) {
-                mobileMenuButton.addEventListener('click', () => {
-                    mobileMenu.classList.toggle('hidden');
-                });
-            }
-
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (!mobileMenu.classList.contains('hidden')) {
-                        mobileMenu.classList.add('hidden');
-                    }
-                });
-            });
-
-            let lastScrollTop = 0;
-            const navbar = document.querySelector('.navbar');
-            const navbarHeight = navbar.offsetHeight;
-            const desktopBreakpoint = 768; 
-
-            function handleNavbarVisibility() {
-                let currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-                if (window.innerWidth >= desktopBreakpoint) {
-                    if (currentScrollTop <= 10) { 
-                        navbar.style.transform = 'translateY(0)';
-                    } else if (currentScrollTop > lastScrollTop && currentScrollTop > navbarHeight) {
-                        navbar.style.transform = 'translateY(-100%)';
-                    } else if (currentScrollTop < lastScrollTop) {
-                        navbar.style.transform = 'translateY(0)';
-                    }
-                } else {
-                    navbar.style.transform = 'translateY(0)';
-                }
-                
-                lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
-            }
-
-            window.addEventListener('scroll', handleNavbarVisibility);
-            window.addEventListener('resize', handleNavbarVisibility);
-            
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    if (this.classList.contains('mobile-menu-link')) { }
-                    
-                    if (this.getAttribute('href') === '#') {
-                        e.preventDefault();
-                        return;
-                    }
-
-                    const targetId = this.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-                    
-                    if (targetElement) {
-                        e.preventDefault();
-                        targetElement.scrollIntoView({
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
-        });
-    </script>
-</body>
-</html>
+@endsection

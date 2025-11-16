@@ -3,26 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable; // Penting untuk login
+// Pastikan Anda meng-import 'Authenticatable'
+use Illuminate\Foundation\Auth\User as Authenticatable; 
 use Illuminate\Notifications\Notifiable;
 
+// Pastikan Anda 'extends Authenticatable'
 class Pengguna extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * Menentukan tabel database yang digunakan oleh model.
-     */
     protected $table = 'pengguna';
-
-    /**
-     * Menentukan primary key.
-     */
     protected $primaryKey = 'uid';
 
-    /**
-     * Kolom yang boleh diisi secara massal (mass assignable).
-     */
     protected $fillable = [
         'username',
         'password',
@@ -37,18 +29,11 @@ class Pengguna extends Authenticatable
         'address',
     ];
 
-    /**
-     * Kolom yang harus disembunyikan.
-     */
     protected $hidden = [
         'password',
     ];
 
-    /**
-     * Kolom yang harus di-cast ke tipe data tertentu.
-     */
     protected $casts = [
         'birthday' => 'date',
-        'password' => 'hashed', // Otomatis hash password saat di-set
     ];
-}   
+}

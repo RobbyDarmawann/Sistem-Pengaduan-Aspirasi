@@ -1,11 +1,5 @@
 @import 'tailwindcss';
 
-.card-layanan {
-    @apply bg-white rounded-xl shadow-md w-[420px] overflow-hidden cursor-pointer transition-all duration-300;
-}
-.card-layanan:hover {
-    @apply -translate-y-2 shadow-xl;
-}
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -16,3 +10,18 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Style untuk mencegah scroll body saat modal aktif */
+        body.modal-open {
+            overflow: hidden;
+        }

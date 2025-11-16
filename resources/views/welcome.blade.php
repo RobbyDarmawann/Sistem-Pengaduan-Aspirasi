@@ -10,60 +10,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet"/>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- Memanggil CSS dan JS utama, termasuk landing.js yang baru --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/landing.js'])
 
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        /* Style untuk mencegah scroll body saat modal aktif */
-        body.modal-open {
-            overflow: hidden;
-        }
-    </style>
+    {{-- Tag <style>...</style> sudah dipindahkan ke app.css --}}
 </head>
 <body class="bg-gray-50">
 
-    <nav class="navbar bg-[#1977B1] shadow-sm sticky top-0 z-40 transition-transform duration-300">
-        <div class="container mx-auto px-5 md:px-20 flex justify-between items-center py-4">
-            
-            <a href="#beranda">
-                <img src="{{ asset('assets/images/logo-suarago.png') }}" alt="Logo Suara Rakyat" class="h-12 md:h-14">
-            </a>
-            
-            <ul class="hidden md:flex space-x-8">
-                <li><a href="#beranda" class="font-medium text-[#ffffff] hover:text-blue-400 transition-colors">Beranda</a></li>
-                <li><a href="#tentang" class="font-medium text-[#ffffff] hover:text-blue-400 transition-colors">Tentang</a></li>
-                <li><a href="#layanan" class="font-medium text-[#ffffff] hover:text-blue-400 transition-colors">Layanan</a></li>
-                <li><a href="#masuk" class="font-medium text-[#ffffff] hover:text-blue-400 transition-colors"><i class="ri-account-circle-line"></i> Masuk</a></li>
-            </ul>
+    {{-- 1. Memanggil Navbar dari file partial --}}
+    @include('partials.navbar')
 
-            <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-white focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
+    {{-- 2. Memanggil Alert dari file partial --}}
+    @include('partials.alert')
 
-        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg border-t border-gray-100">
-            <ul class="flex flex-col">
-                <li><a href="#beranda" class="mobile-menu-link block py-3 px-5 text-gray-600 hover:bg-blue-50">Beranda</a></li>
-                <li><a href="#tentang" class="mobile-menu-link block py-3 px-5 text-gray-600 hover:bg-blue-50">Tentang</a></li>
-                <li><a href="#layanan" class="mobile-menu-link block py-3 px-5 text-gray-600 hover:bg-blue-50">Layanan</a></li>
-                <li><a href="#masuk" class="mobile-menu-link block py-3 px-5 text-gray-600 hover:bg-blue-50">Masuk</a></li>
-            </ul>
-        </div>
-    </nav>
-
+    {{-- 3. Konten Utama Halaman (Header) --}}
     <header id="beranda" class="bg-blue-50 min-h-screen flex items-center pt-16 md:pt-0">
         <div class="container mx-auto px-5 py-20">
             <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-10">
@@ -90,6 +50,7 @@
         </div>
     </header>
 
+    {{-- 4. Konten Utama Halaman (Main) --}}
     <main>
         <section id="tentang" class="py-20 bg-white">
             <div class="container mx-auto px-5">
@@ -107,10 +68,9 @@
             </div>
         </section>
 
-       <section id="masuk" class="py-20 bg-gray-50"> <div class="container mx-auto px-5">
-                
+        <section id="masuk" class="py-20 bg-gray-50"> 
+            <div class="container mx-auto px-5">
                 <div class="bg-[#347ab7] rounded-3xl shadow-xl p-8 md:p-12">
-
                     <h2 class="text-3xl lg:text-4xl font-bold text-center text-white mb-12">
                         Masuk Sebagai Pengguna, Admin, Instansi?
                     </h2>
@@ -148,7 +108,7 @@
             </div>
         </section>
 
-<section id="layanan" class="py-20 bg-white">
+        <section id="layanan" class="py-20 bg-white">
             <div class="container mx-auto px-5">
                 <h2 class="text-3xl lg:text-4xl font-bold text-center text-gray-800 mb-12">
                     Layanan Yang Disediakan
@@ -179,238 +139,14 @@
                 </div>
             </div>
         </section>
-</main>
+    </main>
 
-    <footer class="py-10 bg-gray-800 text-center">
-        <div class="container mx-auto px-5">
-            <p class="text-gray-300">&copy; 2025 Kelompok 5. Hak Cipta Dilindungi.</p>
-        </div>
-    </footer>
+    {{-- 5. Memanggil Footer dari file partial --}}
+    @include('partials.footer')
 
+    {{-- 6. Memanggil Modal dari file partial --}}
     @include('partials.auth-modal')
 
-
-    <script>
-        // ... (SEMUA KODE JAVASCRIPT ANDA YANG SUDAH ADA TETAP DI SINI) ...
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            // --- Script Mobile Menu & Navbar Scroll ---
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
-
-            if (mobileMenuButton) {
-                mobileMenuButton.addEventListener('click', () => {
-                    mobileMenu.classList.toggle('hidden');
-                });
-            }
-
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (!mobileMenu.classList.contains('hidden')) {
-                        mobileMenu.classList.add('hidden');
-                    }
-                });
-            });
-
-            let lastScrollTop = 0;
-            const navbar = document.querySelector('.navbar');
-            const navbarHeight = navbar.offsetHeight;
-            const desktopBreakpoint = 768; 
-
-            function handleNavbarVisibility() {
-                let currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-                if (window.innerWidth >= desktopBreakpoint) {
-                    if (currentScrollTop <= 10) { 
-                        navbar.style.transform = 'translateY(0)';
-                    } else if (currentScrollTop > lastScrollTop && currentScrollTop > navbarHeight) {
-                        navbar.style.transform = 'translateY(-100%)';
-                    } else if (currentScrollTop < lastScrollTop) {
-                        navbar.style.transform = 'translateY(0)';
-                    }
-                } else {
-                    navbar.style.transform = 'translateY(0)';
-                }
-                
-                lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
-            }
-
-            window.addEventListener('scroll', handleNavbarVisibility);
-            window.addEventListener('resize', handleNavbarVisibility);
-            
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    if (this.classList.contains('mobile-menu-link')) { }
-                    
-                    if (this.getAttribute('href') === '#') {
-                        e.preventDefault();
-                        return;
-                    }
-
-                    const targetId = this.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-                    
-                    if (targetElement) {
-                        e.preventDefault();
-                        targetElement.scrollIntoView({
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
-
-            // --- SCRIPT LOGIC MODAL ---
-            const modalContainer = document.getElementById('modal-container');
-            const loginModal = document.getElementById('login-modal');
-            const registerModal = document.getElementById('register-modal');
-            
-            const openLoginButtons = document.querySelectorAll('.open-login-modal');
-            const overlay = document.querySelector('.modal-overlay');
-            
-            const showRegisterButton = document.getElementById('show-register');
-            const showLoginButton = document.getElementById('show-login');
-            const body = document.body;
-            const registerForm = document.getElementById('register-form');
-            const registerButton = document.getElementById('register-submit-button');
-            const generalError = document.getElementById('general-error');
-            const loginSuccessMessage = document.getElementById('login-success-message');
-
-            function openModal() {
-                if (!modalContainer) return; 
-                modalContainer.classList.remove('hidden');
-                modalContainer.classList.add('flex');
-                if (loginModal) loginModal.classList.remove('hidden');
-                if (registerModal) registerModal.classList.add('hidden');
-                body.classList.add('modal-open');
-                clearAllErrors();
-            }
-
-            function closeModal() {
-                if (!modalContainer) return;
-                modalContainer.classList.add('hidden');
-                modalContainer.classList.remove('flex');
-                body.classList.remove('modal-open');
-            }
-
-            openLoginButtons.forEach(button => {
-                button.addEventListener('click', openModal);
-            });
-
-            if (overlay) {
-                overlay.addEventListener('click', closeModal);
-            }
-
-            if (showRegisterButton && loginModal && registerModal) {
-                showRegisterButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    loginModal.classList.add('hidden');
-                    registerModal.classList.remove('hidden');
-                    clearAllErrors();
-                });
-            }
-            
-            function switchToLogin(message) {
-                if (registerModal) registerModal.classList.add('hidden');
-                if (loginModal) loginModal.classList.remove('hidden');
-                
-                if (loginSuccessMessage) {
-                    loginSuccessMessage.textContent = message;
-                    loginSuccessMessage.classList.remove('hidden');
-                }
-            }
-
-            if (showLoginButton && loginModal && registerModal) {
-                showLoginButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    switchToLogin(''); 
-                    if(loginSuccessMessage) loginSuccessMessage.classList.add('hidden');
-                });
-            }
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && modalContainer && !modalContainer.classList.contains('hidden')) {
-                    closeModal();
-                }
-            });
-
-            // --- FUNGSI AJAX REGISTER ---
-            if (registerForm) {
-                registerForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    if (registerButton) {
-                        registerButton.disabled = true;
-                        registerButton.textContent = 'Mendaftar...';
-                    }
-                    clearAllErrors();
-
-                    const formData = new FormData(registerForm);
-                    
-                    fetch('{{ route("register") }}', {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': formData.get('_token')
-                        }
-                    })
-                    .then(response => {
-                        return response.json().then(data => {
-                            if (!response.ok) {
-                                throw data.errors || { general: ['Terjadi kesalahan.'] };
-                            }
-                            return data;
-                        });
-                    })
-                    .then(data => {
-                        if (registerButton) {
-                            registerButton.disabled = false;
-                            registerButton.textContent = 'Daftar';
-                        }
-                        registerForm.reset();
-                        switchToLogin(data.message);
-                    })
-                    .catch(errors => {
-                        if (registerButton) {
-                            registerButton.disabled = false;
-                            registerButton.textContent = 'Daftar';
-                        }
-                        if (errors) {
-                            displayErrors(errors);
-                        } else {
-                            if (generalError) {
-                                generalError.textContent = 'Terjadi kesalahan. Silakan coba lagi nanti.';
-                                generalError.classList.remove('hidden');
-                            }
-                        }
-                    });
-                });
-            }
-
-            function displayErrors(errors) {
-                for (const field in errors) {
-                    const errorElement = document.getElementById(`error-${field}`);
-                    if (errorElement) {
-                        errorElement.textContent = errors[field][0];
-                    }
-                }
-                if (errors.general) {
-                     if(generalError) {
-                        generalError.textContent = errors.general[0];
-                        generalError.classList.remove('hidden');
-                     }
-                }
-            }
-
-            function clearAllErrors() {
-                const errorElements = document.querySelectorAll('[id^="error-"]');
-                errorElements.forEach(el => el.textContent = '');
-                if (generalError) generalError.classList.add('hidden');
-                if (loginSuccessMessage) loginSuccessMessage.classList.add('hidden');
-            }
-
-        });
-    </script>
+    {{-- Tag <script>...</script> sudah dipindahkan ke landing.js --}}
 </body>
 </html>
