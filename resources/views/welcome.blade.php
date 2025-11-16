@@ -22,7 +22,8 @@
         html {
             scroll-behavior: smooth;
         }
-
+        
+        /* Style untuk mencegah scroll body saat modal aktif */
         body.modal-open {
             overflow: hidden;
         }
@@ -30,7 +31,8 @@
 </head>
 <body class="bg-gray-50">
 
-    <nav class="navbar bg-[#1977B1] shadow-sm sticky top-0 z-40 transition-transform duration-300"> <div class="container mx-auto px-5 md:px-20 flex justify-between items-center py-4">
+    <nav class="navbar bg-[#1977B1] shadow-sm sticky top-0 z-40 transition-transform duration-300">
+        <div class="container mx-auto px-5 md:px-20 flex justify-between items-center py-4">
             
             <a href="#beranda">
                 <img src="{{ asset('assets/images/logo-suarago.png') }}" alt="Logo Suara Rakyat" class="h-12 md:h-14">
@@ -61,18 +63,6 @@
             </ul>
         </div>
     </nav>
-
-    @if(session('success'))
-    <div id="alert-message" class="fixed top-24 right-5 z-50 bg-green-500 text-white py-3 px-5 rounded-lg shadow-lg">
-        {{ session('success') }}
-    </div>
-    @endif
-
-    @if($errors->any())
-    <div id="alert-message" class="fixed top-24 right-5 z-50 bg-red-500 text-white py-3 px-5 rounded-lg shadow-lg">
-        {{ $errors->first() }}
-    </div>
-    @endif
 
     <header id="beranda" class="bg-blue-50 min-h-screen flex items-center pt-16 md:pt-0">
         <div class="container mx-auto px-5 py-20">
@@ -189,7 +179,7 @@
                 </div>
             </div>
         </section>
-    </main>
+</main>
 
     <footer class="py-10 bg-gray-800 text-center">
         <div class="container mx-auto px-5">
@@ -200,10 +190,11 @@
     @include('partials.auth-modal')
 
 
-   <script>
-document.addEventListener('DOMContentLoaded', function() {
+    <script>
+        // ... (SEMUA KODE JAVASCRIPT ANDA YANG SUDAH ADA TETAP DI SINI) ...
+        document.addEventListener('DOMContentLoaded', function() {
             
-            // --- Script Mobile Menu & Navbar Scroll (TETAP SAMA) ---
+            // --- Script Mobile Menu & Navbar Scroll ---
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
@@ -269,10 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
 
-            // ================================================
-            // --- SCRIPT LOGIC MODAL (DIPERBARUI) ---
-            // ================================================
-
+            // --- SCRIPT LOGIC MODAL ---
             const modalContainer = document.getElementById('modal-container');
             const loginModal = document.getElementById('login-modal');
             const registerModal = document.getElementById('register-modal');
@@ -283,27 +271,21 @@ document.addEventListener('DOMContentLoaded', function() {
             const showRegisterButton = document.getElementById('show-register');
             const showLoginButton = document.getElementById('show-login');
             const body = document.body;
-
-            // Variabel baru untuk form
             const registerForm = document.getElementById('register-form');
             const registerButton = document.getElementById('register-submit-button');
             const generalError = document.getElementById('general-error');
-            const loginSuccessMessage = document.getElementById('login-success-message'); // Baru
+            const loginSuccessMessage = document.getElementById('login-success-message');
 
-            // Fungsi untuk membuka modal (defaultnya login)
             function openModal() {
                 if (!modalContainer) return; 
                 modalContainer.classList.remove('hidden');
                 modalContainer.classList.add('flex');
-                
                 if (loginModal) loginModal.classList.remove('hidden');
                 if (registerModal) registerModal.classList.add('hidden');
-                
                 body.classList.add('modal-open');
-                clearAllErrors(); // Bersihkan error lama saat modal dibuka
+                clearAllErrors();
             }
 
-            // Fungsi untuk menutup semua modal
             function closeModal() {
                 if (!modalContainer) return;
                 modalContainer.classList.add('hidden');
@@ -319,7 +301,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 overlay.addEventListener('click', closeModal);
             }
 
-            // Saat klik "Daftar di sini"
             if (showRegisterButton && loginModal && registerModal) {
                 showRegisterButton.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -329,10 +310,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
             
-            // Fungsi baru: Pindah ke login (setelah sukses daftar)
             function switchToLogin(message) {
-                registerModal.classList.add('hidden');
-                loginModal.classList.remove('hidden');
+                if (registerModal) registerModal.classList.add('hidden');
+                if (loginModal) loginModal.classList.remove('hidden');
                 
                 if (loginSuccessMessage) {
                     loginSuccessMessage.textContent = message;
@@ -340,11 +320,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            // Saat klik "Masuk di sini" (dari modal daftar)
             if (showLoginButton && loginModal && registerModal) {
                 showLoginButton.addEventListener('click', (e) => {
                     e.preventDefault();
-                    // Panggil fungsi ini agar pesan sukses (jika ada) juga hilang
                     switchToLogin(''); 
                     if(loginSuccessMessage) loginSuccessMessage.classList.add('hidden');
                 });
@@ -356,14 +334,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // --- FUNGSI AJAX REGISTER (DIPERBARUI TOTAL) ---
-
+            // --- FUNGSI AJAX REGISTER ---
             if (registerForm) {
                 registerForm.addEventListener('submit', function(e) {
-                    e.preventDefault(); // Mencegah reload halaman
+                    e.preventDefault();
                     
-                    registerButton.disabled = true;
-                    registerButton.textContent = 'Mendaftar...';
+                    if (registerButton) {
+                        registerButton.disabled = true;
+                        registerButton.textContent = 'Mendaftar...';
+                    }
                     clearAllErrors();
 
                     const formData = new FormData(registerForm);
@@ -373,71 +352,63 @@ document.addEventListener('DOMContentLoaded', function() {
                         body: formData,
                         headers: {
                             'Accept': 'application/json',
-                            'X-CSRF-TOKEN': formData.get('_token') // Ambil token dari form
+                            'X-CSRF-TOKEN': formData.get('_token')
                         }
                     })
                     .then(response => {
-                        // Cek jika respon adalah 422 (Validation Error) atau 200 (Success)
                         return response.json().then(data => {
                             if (!response.ok) {
-                                // Jika status BUKAN 200-299 (misal 422)
-                                // Lempar error agar ditangkap .catch()
                                 throw data.errors || { general: ['Terjadi kesalahan.'] };
                             }
-                            // Jika status OK (200)
                             return data;
                         });
                     })
                     .then(data => {
-                        // --- INI BLOCK SUKSES (STATUS 200) ---
-                        registerButton.disabled = false;
-                        registerButton.textContent = 'Daftar';
+                        if (registerButton) {
+                            registerButton.disabled = false;
+                            registerButton.textContent = 'Daftar';
+                        }
                         registerForm.reset();
-                        
-                        // Pindah ke modal login dengan pesan sukses
                         switchToLogin(data.message);
                     })
                     .catch(errors => {
-                        // --- INI BLOCK GAGAL (STATUS 422 ATAU LAINNYA) ---
-                        registerButton.disabled = false;
-                        registerButton.textContent = 'Daftar';
-
+                        if (registerButton) {
+                            registerButton.disabled = false;
+                            registerButton.textContent = 'Daftar';
+                        }
                         if (errors) {
-                            // 'errors' adalah objek {nik: [...], email: [...]}
                             displayErrors(errors);
                         } else {
-                            // Error tidak terduga
-                            generalError.textContent = 'Terjadi kesalahan. Silakan coba lagi nanti.';
-                            generalError.classList.remove('hidden');
+                            if (generalError) {
+                                generalError.textContent = 'Terjadi kesalahan. Silakan coba lagi nanti.';
+                                generalError.classList.remove('hidden');
+                            }
                         }
                     });
                 });
             }
 
-            // Fungsi untuk menampilkan error di bawah input
             function displayErrors(errors) {
                 for (const field in errors) {
                     const errorElement = document.getElementById(`error-${field}`);
                     if (errorElement) {
-                        errorElement.textContent = errors[field][0]; // Tampilkan error pertama
+                        errorElement.textContent = errors[field][0];
                     }
                 }
-                // Jika ada error 'general'
                 if (errors.general) {
-                     generalError.textContent = errors.general[0];
-                     generalError.classList.remove('hidden');
+                     if(generalError) {
+                        generalError.textContent = errors.general[0];
+                        generalError.classList.remove('hidden');
+                     }
                 }
             }
 
-            // Fungsi untuk membersihkan semua pesan error
             function clearAllErrors() {
                 const errorElements = document.querySelectorAll('[id^="error-"]');
                 errorElements.forEach(el => el.textContent = '');
                 if (generalError) generalError.classList.add('hidden');
-                if (loginSuccessMessage) loginSuccessMessage.classList.add('hidden'); // Sembunyikan pesan sukses
+                if (loginSuccessMessage) loginSuccessMessage.classList.add('hidden');
             }
-
-            // (Fungsi showAlert tidak diperlukan lagi karena pesan sukses ada di modal)
 
         });
     </script>
