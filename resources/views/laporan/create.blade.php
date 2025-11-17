@@ -8,7 +8,7 @@
         <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-8 md:p-12">
             
             <div class="w-full max-w-xs mx-auto bg-blue-600 text-white text-center py-3 rounded-lg text-xl font-semibold mb-8">
-                Laporan
+                <span id="form-title">Laporan Pengaduan</span>
             </div>
 
             <form action="#" method="POST">
@@ -34,8 +34,8 @@
                     
                     <textarea name="isi_laporan" rows="6" class="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ketik Isi Laporan Anda*" required></textarea>
                     
-                    <div class="relative">
-                        <input type="date" name="tanggal_kejadian" class="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Pilih Tanggal Kejadian*" required>
+                    <div id="tanggal-kejadian-wrapper" class="relative">
+                        <input type="text" id="tanggal-kejadian-input" name="tanggal_kejadian" class="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Pilih Tanggal Kejadian*" required>
                         <i class="ri-calendar-line absolute top-1/2 right-4 -translate-y-1/2 text-gray-500"></i>
                     </div>
 
@@ -54,11 +54,13 @@
                         <option value="kepolisian">Kepolisian</option>
                     </select>
 
-                    <select name="lokasi_kejadian" class="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                        <option value="">Ketik Lokasi Kejadian*</option>
-                        <option value="gorontalo">Gorontalo</option>
-                        <option value="manado">Manado</option>
-                    </select>
+                    <div id="lokasi-kejadian-wrapper">
+                        <select name="lokasi_kejadian" id="lokasi-kejadian-input" class="w-full px-4 py-3 rounded-lg bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <option value="">Ketik Lokasi Kejadian*</option>
+                            <option value="gorontalo">Gorontalo</option>
+                            <option value="manado">Manado</option>
+                        </select>
+                    </div>
 
                     <div>
                         <label for="lampiran" class="block text-sm font-medium text-gray-700 mb-2">
@@ -95,15 +97,67 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Ambil tipe default dari controller yang dikirim ke view
-        const defaultTipe = @json($defaultTipe);
+        // --- Ambil semua elemen yang kita butuhkan ---
+        const radioAspirasi = document.getElementById('radio_aspirasi');
+        const radioPengaduan = document.getElementById('radio_pengaduan');
+        const formTitle = document.getElementById('form-title');
 
-        if (defaultTipe === 'aspirasi') {
-            document.getElementById('radio_aspirasi').checked = true;
-        } else {
-            // Default ke pengaduan jika 'pengaduan' atau null
-            document.getElementById('radio_pengaduan').checked = true;
+        const tanggalWrapper = document.getElementById('tanggal-kejadian-wrapper');
+        const tanggalInput = document.getElementById('tanggal-kejadian-input');
+        
+        // --- PERUBAHAN JS: Ambil elemen lokasi ---
+        const lokasiWrapper = document.getElementById('lokasi-kejadian-wrapper');
+        const lokasiInput = document.getElementById('lokasi-kejadian-input');
+
+        const defaultTipe = @json($tipe ?? 'pengaduan');
+
+        // --- Fungsi untuk mengubah tampilan form ---
+        function updateFormTipe() {
+            if (radioAspirasi.checked) {
+                // Sembunyikan "Tanggal Kejadian"
+                tanggalWrapper.style.display = 'none';
+                tanggalInput.required = false;
+                
+                // --- PERUBAHAN JS: Sembunyikan "Lokasi Kejadian" ---
+                lokasiWrapper.style.display = 'none';
+                lokasiInput.required = false;
+
+                formTitle.textContent = 'Laporan Aspirasi';
+            } else {
+                // Tampilkan "Tanggal Kejadian"
+                tanggalWrapper.style.display = 'block';
+                tanggalInput.required = true;
+
+                // --- PERUBAHAN JS: Tampilkan "Lokasi Kejadian" ---
+                lokasiWrapper.style.display = 'block';
+                lokasiInput.required = true;
+
+                formTitle.textContent = 'Laporan Pengaduan';
+            }
         }
+
+        // --- Atur status default saat halaman dimuat ---
+        if (defaultTipe === 'aspirasi') {
+            radioAspirasi.checked = true;
+        } else {
+            radioPengaduan.checked = true;
+        }
+        updateFormTipe();
+
+        // --- Tambahkan 'listener' untuk memantau klik ---
+        radioAspirasi.addEventListener('change', updateFormTipe);
+        radioPengaduan.addEventListener('change', updateFormTipe);
+
+        // --- Logika untuk placeholder tanggal ---
+        tanggalInput.addEventListener('focus', function() {
+            this.type = 'date';
+        });
+        tanggalInput.addEventListener('blur', function() {
+            if (this.value === '') {
+                this.type = 'text';
+            }
+        });
+        tanggalInput.dispatchEvent(new Event('blur'));
     });
 </script>
 @endpush

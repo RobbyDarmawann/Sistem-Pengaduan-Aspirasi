@@ -12,13 +12,11 @@ class LaporanController extends Controller
      * @param  string|null  $tipe
      * @return \Illuminate\View\View
      */
-    public function create($tipe = null)
+        public function create($tipe = 'pengaduan') // 1. Terima $tipe dari route
     {
-        // Set tipe default ke 'pengaduan' jika tidak ada atau tidak valid
-        $defaultTipe = ($tipe == 'aspirasi') ? 'aspirasi' : 'pengaduan';
-
+        // 2. Kirim variabel $tipe ke view
         return view('laporan.create', [
-            'defaultTipe' => $defaultTipe
+            'tipe' => $tipe
         ]);
     }
 }

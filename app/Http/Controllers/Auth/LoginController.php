@@ -5,14 +5,15 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash; // <-- PENTING: Import Hash
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
-use App\Models\Pengguna; // <-- PENTING: Import model Pengguna
+use App\Models\Pengguna; 
 
 class LoginController extends Controller
 {
     /**
      * Menangani percobaan autentikasi secara manual.
+     * (Untuk Login Modal AJAX)
      */
     public function store(Request $request)
     {
@@ -29,13 +30,13 @@ class LoginController extends Controller
                         ->orWhere('phone_number', $login_field)
                         ->first();
 
-    if ($user && Hash::check($password, $user->password)) {
+        if ($user && Hash::check($password, $user->password)) {
 
-            Auth::login($user);
+            Auth::login($user); // Otomatis menggunakan guard 'web'
             
             $request->session()->regenerate();
 
-            // 4. Kirim respon JSON
+            // 4. Kirim respon JSON (SUDAH BENAR)
             return response()->json([
                 'success' => true,
                 'redirect_url' => '/home' // Pastikan rute ini ada
@@ -48,15 +49,19 @@ class LoginController extends Controller
         ]);
     }
 
-        public function destroy(Request $request)
+    /**
+     * Menangani proses logout.
+     * (Untuk Logout AJAX dari landing.js)
+     */
+    public function destroy(Request $request)
     {
-        Auth::guard('web')->logout();
+        Auth::guard('web')->logout(); // Hanya logout 'web' (Pengguna)
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        // Mengirim respon JSON, bukan redirect
+        // Mengirim respon JSON (SUDAH BENAR)
         return response()->json([
             'success' => true,
             'message' => 'Anda telah berhasil keluar.',
@@ -64,5 +69,3 @@ class LoginController extends Controller
         ], 200);
     }
 }
-
-

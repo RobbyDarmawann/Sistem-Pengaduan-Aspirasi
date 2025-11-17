@@ -90,9 +90,9 @@
                             <img src="{{ asset('assets/images/profil-admin.jpg') }}" alt="Admin" class="w-24 h-24 rounded-full mx-auto mb-5 object-cover bg-gray-200">
                             <h3 class="text-2xl font-semibold mb-3 text-gray-800">Admin</h3>
                             <p class="text-gray-600 mb-6">Kelola laporan dan aspirasi yang masuk, atur pengguna, serta pantau kinerja sistem secara menyeluruh.</p>
-                            <button class="open-login-modal inline-block py-3 px-7 rounded-full font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300">
-                                Masuk
-                            </button>
+                        <a href="{{ route('admin.login') }}" class="inline-block py-3 px-7 rounded-full font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300">
+                            Masuk
+                        </a>
                         </div>
                         
                         <div class="card-masuk bg-white rounded-xl shadow-md p-8 w-full md:w-96 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg">
