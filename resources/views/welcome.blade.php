@@ -10,12 +10,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet"/>
 
-    {{-- Memanggil CSS dan JS utama, termasuk landing.js yang baru --}}
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/landing.js'])
 
     {{-- Tag <style>...</style> sudah dipindahkan ke app.css --}}
 </head>
 <body class="bg-gray-50">
+    
 
     {{-- 1. Memanggil Navbar dari file partial --}}
     @include('partials.navbar')
@@ -141,12 +141,9 @@
         </section>
     </main>
 
-    {{-- 5. Memanggil Footer dari file partial --}}
     @include('partials.footer')
 
-    {{-- 6. Memanggil Modal dari file partial --}}
     @include('partials.auth-modal')
 
-    {{-- Tag <script>...</script> sudah dipindahkan ke landing.js --}}
 </body>
 </html>

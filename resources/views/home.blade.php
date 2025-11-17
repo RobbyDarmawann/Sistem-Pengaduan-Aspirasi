@@ -123,21 +123,19 @@
                     
                     <a href="{{ route('laporan.create', ['tipe' => 'aspirasi']) }}" class="block w-11/12 md:w-auto transition-all duration-300 hover:-translate-y-2">
                         <div class="card-layanan bg-white rounded-xl shadow-md w-full md:w-[420px] overflow-hidden hover:shadow-xl">
-                            <img src="{{ asset('assets/images/layanan-aspirasi.jpg') }}" alt="Laporan Aspirasi" class="w-full h-64 object-cover bg-gray-200">
-                            <div class="layanan-text bg-[#347ab7] p-
-                            8">
+                            <img src="{{ asset('assets/images/layanan-aspirasi.jpg') }}" alt="Laporan Pengaduan" class="w-full h-64 object-cover bg-gray-200">
+                            <div class="layanan-text bg-[#347ab7] p-8">
                                 <h3 class="text-2xl font-semibold text-white mb-3">Laporan Aspirasi</h3>
-                                <p class="text-blue-100 leading-relaxed">Sampaikan ide, gagasan, atau masukan konstruktif Anda untuk turut serta dalam perbaikan dan pengembangan layanan publik.</p>
+                                <p class="text-blue-100 leading-relaxed">Sampaikan ide, gagasan, atau masukan konstruktif untuk turut serta dalam perbaikan dan pengembangan layanan publik yang baik.</p>
                             </div>
                         </div>
                     </a>
-                    
                     <a href="{{ route('laporan.create', ['tipe' => 'pengaduan']) }}" class="block w-11/12 md:w-auto transition-all duration-300 hover:-translate-y-2">
                         <div class="card-layanan bg-white rounded-xl shadow-md w-full md:w-[420px] overflow-hidden hover:shadow-xl">
                             <img src="{{ asset('assets/images/layanan-pengaduan.png') }}" alt="Laporan Pengaduan" class="w-full h-64 object-cover bg-gray-200">
                             <div class="layanan-text bg-[#347ab7] p-8">
                                 <h3 class="text-2xl font-semibold text-white mb-3">Laporan Pengaduan</h3>
-                                <p class="text-blue-100 leading-relaxed">Adukan setiap permasalahan, penyimpangan, atau ketidakpuasan terhadap layanan pemerintah agar segera ditindaklanjuti.</p>
+                                <p class="text-blue-100 leading-relaxed">Adukan setiap permasalahan, penyimpangan, atau ketidakpuasan anda terhadap layanan pemerintah agar segera ditindaklanjuti.</p>
                             </div>
                         </div>
                     </a>

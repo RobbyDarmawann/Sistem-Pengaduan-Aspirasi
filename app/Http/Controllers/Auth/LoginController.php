@@ -24,26 +24,21 @@ class LoginController extends Controller
         $login_field = $request->input('login_field');
         $password = $request->input('password');
 
-        // 2. Lakukan pencarian manual (BYPASS Auth::attempt)
-        // Coba cari sebagai email, ATAU username, ATAU phone_number
         $user = Pengguna::where('email', $login_field)
                         ->orWhere('username', $login_field)
                         ->orWhere('phone_number', $login_field)
                         ->first();
 
-        // 3. Cek apakah user ditemukan DAN password-nya cocok
-        // Kita gunakan Hash::check() yang sudah terbukti true di Tinker
-            if ($user && $password == $user->password) {
-            
-            // 4. Jika sukses, loginkan user secara manual
-            Auth::login($user); // <-- Ini adalah "manual attempt"
+    if ($user && Hash::check($password, $user->password)) {
+
+            Auth::login($user);
             
             $request->session()->regenerate();
 
-            // 5. Kirim respon JSON
+            // 4. Kirim respon JSON
             return response()->json([
                 'success' => true,
-                'redirect_url' => '/home'
+                'redirect_url' => '/home' // Pastikan rute ini ada
             ], 200);
         }
 
@@ -53,7 +48,7 @@ class LoginController extends Controller
         ]);
     }
 
-    public function destroy(Request $request)
+        public function destroy(Request $request)
     {
         Auth::guard('web')->logout();
 
@@ -62,7 +57,11 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
 
         // Mengirim respon JSON, bukan redirect
-        return redirect('/')->with('success', 'Anda telah berhasil keluar.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Anda telah berhasil keluar.',
+            'redirect_url' => url('/') // Beri tahu JS ke mana harus pergi
+        ], 200);
     }
 }
 

@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
             
-            // --- Script Mobile Menu & Navbar Scroll (TETAP SAMA) ---
-            // ... (Kode ini tidak perlu diubah) ...
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
@@ -11,14 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             function handleNavbarVisibility() { let currentScrollTop = window.pageYOffset || document.documentElement.scrollTop; if (window.innerWidth >= desktopBreakpoint) { if (currentScrollTop <= 10) { navbar.style.transform = 'translateY(0)'; } else if (currentScrollTop > lastScrollTop && currentScrollTop > navbarHeight) { navbar.style.transform = 'translateY(-100%)'; } else if (currentScrollTop < lastScrollTop) { navbar.style.transform = 'translateY(0)'; } } else { navbar.style.transform = 'translateY(0)'; } lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; }
             window.addEventListener('scroll', handleNavbarVisibility); window.addEventListener('resize', handleNavbarVisibility);
             document.querySelectorAll('a[href^="#"]').forEach(anchor => { anchor.addEventListener('click', function (e) { if (this.classList.contains('mobile-menu-link')) { } if (this.getAttribute('href') === '#') { e.preventDefault(); return; } const targetId = this.getAttribute('href'); const targetElement = document.querySelector(targetId); if (targetElement) { e.preventDefault(); targetElement.scrollIntoView({ behavior: 'smooth' }); } }); });
-            // --- AKHIR DARI SCRIPT YANG TIDAK BERUBAH ---
 
-
-            // ================================================
-            // --- SCRIPT LOGIC MODAL (LOGIN & REGISTER) ---
-            // ================================================
-
-            // Variabel Global Modal
             const modalContainer = document.getElementById('modal-container');
             const loginModal = document.getElementById('login-modal');
             const registerModal = document.getElementById('register-modal');
@@ -93,6 +84,50 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
+            const logoutForm = document.getElementById('logout-form');
+            if (logoutForm) {
+                logoutForm.addEventListener('submit', handleLogout);
+            }
+
+            // Tangani form logout di mobile
+            const mobileLogoutForm = document.getElementById('mobile-logout-form');
+            if (mobileLogoutForm) {
+                mobileLogoutForm.addEventListener('submit', handleLogout);
+            }
+
+            // Buat satu fungsi untuk menangani kedua form
+            function handleLogout(e) {
+                e.preventDefault(); // Hentikan pengiriman form standar
+                
+                const form = e.target;
+                const formData = new FormData(form);
+                const url = form.getAttribute('action');
+
+                fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': formData.get('_token')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Logout berhasil!
+                        // Arahkan pengguna ke halaman utama secara manual
+                        window.location.href = data.redirect_url;
+                    } else {
+                        // Jika server mengembalikan 'success: false'
+                        alert('Gagal keluar akun. Silakan coba lagi.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saat logout:', error);
+                    alert('Terjadi kesalahan. Tidak dapat keluar akun.');
+                });
+            }
+
             // --- Event Listeners Modal ---
 
             openLoginButtons.forEach(button => {
@@ -139,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     const formData = new FormData(loginForm);
                     
-                    fetch('{{ route("login") }}', {
+                    fetch(loginForm.dataset.url, { 
                         method: 'POST',
                         body: formData,
                         headers: {
@@ -192,13 +227,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     const formData = new FormData(registerForm);
                     
-                    fetch('{{ route("register") }}', {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': formData.get('_token')
-                        }
+                     const url = registerForm.dataset.url; 
+
+                        fetch(url, { // <-- Menggunakan variabel 'url'
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': formData.get('_token')
+                            }
                     })
                     .then(response => {
                         return response.json().then(data => {

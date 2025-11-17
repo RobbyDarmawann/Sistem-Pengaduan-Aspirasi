@@ -11,21 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pengguna', function (Blueprint $table) {
-            $table->id('uid'); 
-            $table->string('username', 100)->unique();
-            $table->string('password'); 
-            $table->string('full_name', 255);
-            $table->integer('report_count')->default(0);   
+Schema::create('pengguna', function (Blueprint $table) {
+            $table->id(); // Sesuai gambar Anda, Anda pakai 'id'
+            
+            // --- INI PERBAIKANNYA ---
+            $table->string('username')->unique()->nullable(); // <-- TAMBAHKAN ->nullable()
+            $table->string('email')->unique()->nullable();    // <-- TAMBAHKAN ->nullable()
+            $table->string('phone_number')->unique()->nullable(); // <-- TAMBAHKAN ->nullable()
+            // --- AKHIR PERBAIKAN ---
+
+            $table->string('password');
+            $table->string('full_name');
+            $table->integer('report_count')->default(0);
             $table->integer('aspiration_count')->default(0);
-            $table->tinyInteger('gender')->nullable()->comment('1=Laki-laki, 2=Perempuan');
-            $table->string('email', 255)->unique();
+            $table->string('gender')->nullable();
             $table->date('birthday')->nullable();
-            $table->string('phone_number', 15)->nullable();
-            $table->string('nik', 16)->nullable()->unique();
-            $table->string('job', 50)->nullable();
-            $table->string('domicile', 255)->nullable();
-            $table->string('address', 255)->nullable();
+            $table->string('nik')->unique()->nullable();
+            $table->string('job')->nullable();
+            $table->string('domicile')->nullable();
+            $table->string('address')->nullable();
             $table->timestamps();
         });
     }
