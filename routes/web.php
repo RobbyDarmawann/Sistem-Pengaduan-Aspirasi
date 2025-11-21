@@ -43,4 +43,5 @@ Route::get('/laporan/{id}', [AdminLaporanController::class, 'show'])->name('lapo
     Route::get('/laporan/{id}/progres', [AdminLaporanController::class, 'showProgres'])->name('laporan.progres');
     Route::post('/laporan/{id}/selesai', [AdminLaporanController::class, 'selesai'])->name('laporan.selesai');
     Route::post('/laporan/{id}/dukung', [AdminLaporanController::class, 'dukung'])->name('laporan.dukung');
+    Route::post('/laporan/{id}/komentar', [AdminLaporanController::class, 'storeKomentar'])->name('laporan.komentar');
 });
