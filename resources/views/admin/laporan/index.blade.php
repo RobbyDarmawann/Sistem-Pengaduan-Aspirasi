@@ -93,17 +93,16 @@
                     <td class="px-6 py-4 text-center">
                             
                             @if($item->status == 'belum_disetujui')
-                                {{-- 1. JIKA BELUM DISETUJUI -> Tampilkan Tombol Verifikasi --}}
                                 <a href="{{ route('admin.laporan.show', $item->id) }}" 
                                 class="inline-block px-4 py-2 bg-[#3282B8] text-white text-xs font-bold rounded-md hover:bg-[#1B6CA8] transition-colors shadow-sm">
                                     Lihat Detail
                                 </a>
                             
                             @elseif($item->status == 'diproses' || $item->status == 'selesai')
-                                {{-- 2. JIKA DIPROSES/SELESAI -> Tampilan Beda (Menunggu instruksi Anda selanjutnya) --}}
-                                <button class="inline-block px-4 py-2 bg-gray-200 text-gray-500 text-xs font-bold rounded-md cursor-not-allowed" disabled>
-                                    Lihat Progres
-                                </button>
+                                <a href="{{ route('admin.laporan.progres', $item->id) }}" 
+                                class="inline-block px-4 py-2 bg-[#3282B8] text-white text-xs font-bold rounded-md hover:bg-[#1B6CA8] transition-colors shadow-sm">
+                                    Lihat Postingan
+                                </a>
                                 
                             @elseif($item->status == 'ditolak')
                                 <span class="text-xs font-bold text-red-500">Ditolak</span>
