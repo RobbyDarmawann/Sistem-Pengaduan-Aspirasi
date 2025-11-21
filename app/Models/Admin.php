@@ -10,24 +10,9 @@ class Admin extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * Tentukan tabel yang digunakan
-     */
     protected $table = 'admin';
-
-    /**
-     * Tentukan primary key
-     */
     protected $primaryKey = 'aid';
-
-    /**
-     * Primary key BUKAN auto-increment
-     */
-    public $incrementing = true; // 'id' (default) adalah int, 'aid' Anda juga 'id()', jadi true
-
-    /**
-     * Atribut yang boleh diisi
-     */
+    public $incrementing = true; 
     protected $fillable = [
         'username',
         'password',
