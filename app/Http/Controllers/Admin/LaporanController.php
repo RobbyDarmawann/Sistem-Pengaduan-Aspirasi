@@ -55,7 +55,7 @@ public function index(Request $request)
         return view('admin.laporan.show', compact('laporan'));
     }
 
-    public function verifikasi(Request $request, $id)
+   public function verifikasi(Request $request, $id)
     {
         $laporan = Laporan::findOrFail($id);
 
@@ -64,15 +64,23 @@ public function index(Request $request)
             $pesan = 'Laporan berhasil ditolak.';
         } elseif ($request->action === 'setujui') {
             $laporan->status = 'diproses';
-            $pesan = 'Laporan disetujui dan diteruskan ke instansi terkait.';
-            $instansiTujuan = ucwords(str_replace('_', ' ', $laporan->instansi_tujuan));
+            $pesan = 'Laporan disetujui dan diteruskan.';
+
+            // --- BAGIAN INI YANG MEMBUAT TAMPILAN SEPERTI GAMBAR ---
             
+            // 1. Rapikan nama instansi (misal: dinas_pu -> Dinas Pekerjaan Umum)
+            $tujuan = ucwords(str_replace('_', ' ', $laporan->instansi_tujuan));
+
+            // 2. Buat data tindak lanjut otomatis
             TindakLanjut::create([
                 'laporan_id' => $laporan->id,
-                'instansi_nama' => 'Admin SuaraGO', // Atau nama Instansi Pusat
-                'isi_tindak_lanjut' => "Laporan telah diverifikasi dan didisposisikan ke {$instansiTujuan} untuk segera ditindaklanjuti.",
+                // Nama Instansi Utama (Sesuai Gambar Anda)
+                'instansi_nama' => 'Pemerintah Kota Gorontalo', 
+                // Isi Pesan Disposisi
+                'isi_tindak_lanjut' => "Laporan didisposisikan ke {$tujuan}",
                 'waktu_tindak_lanjut' => now(),
             ]);
+            // -------------------------------------------------------
         } else {
             return back()->with('error', 'Aksi tidak valid.');
         }

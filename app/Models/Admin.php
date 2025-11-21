@@ -20,6 +20,7 @@ class Admin extends Authenticatable
         'email',
         'phone_number',
         'address',
+        'profile_photo_path',
         'received_report',
         'processing_count',
         'completed_count',

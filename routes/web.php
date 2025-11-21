@@ -35,6 +35,7 @@ Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/laporan', [AdminLaporanController::class, 'index'])->name('laporan.index');
 Route::get('/profil', [ProfileController::class, 'index'])->name('profil.index');
+Route::put('/profil', [ProfileController::class, 'update'])->name('profil.update');
 Route::get('/laporan', [AdminLaporanController::class, 'index'])->name('laporan.index');
 Route::get('/laporan/{id}', [AdminLaporanController::class, 'show'])->name('laporan.show');
     

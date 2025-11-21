@@ -89,39 +89,55 @@
                 </button>
             </div>
 
-            <div id="section-tindak-lanjut" class="bg-gray-50 px-8 py-6 border-b border-gray-200 hidden transition-all duration-300">
-                <h3 class="font-bold text-gray-800 mb-4">Riwayat Tindak Lanjut</h3>
+           <div id="section-tindak-lanjut" class="bg-white px-8 py-6 border-b border-gray-200 hidden transition-all duration-300">
+    
+    <div class="flex items-center gap-2 mb-6 pb-2 border-b border-gray-100">
+        <i class="ri-history-line text-gray-500"></i>
+        <span class="text-sm font-bold text-gray-600">Riwayat Progres</span>
+        <span class="bg-blue-100 text-blue-600 text-xs px-2 py-0.5 rounded-full font-bold ml-auto">
+            {{ $laporan->tindakLanjuts->count() }} Aktivitas
+        </span>
+    </div>
+    
+    <div class="space-y-6">
+        @forelse($laporan->tindakLanjuts as $tl)
+            <div class="flex gap-4">
+                <div class="flex-shrink-0">
+                    <img src="{{ asset('assets/images/logo-icon.png') }}" 
+                         alt="Logo Instansi" 
+                         class="w-10 h-10 object-contain">
+                </div>
                 
-                <div class="space-y-4">
-                    @forelse($laporan->tindakLanjuts as $tl)
-                        <div class="flex gap-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                            <img src="{{ asset('assets/images/logo-icon.png') }}" class="w-12 h-12 object-contain bg-white p-1 rounded-full border border-gray-200">
-                            
-                            <div class="flex-1">
-                                <div class="flex justify-between items-start mb-1">
-                                    <div>
-                                        <h4 class="font-bold text-gray-900">{{ $tl->instansi_nama }}</h4>
-                                        <p class="text-xs text-gray-500 mt-0.5">
-                                            @if(str_contains(strtolower($tl->isi_tindak_lanjut), 'disposisi'))
-                                                Laporan didisposisikan ke <span class="font-bold text-gray-700">{{ ucwords(str_replace('_', ' ', $laporan->instansi_tujuan)) }}</span>
-                                            @else
-                                                Menanggapi laporan
-                                            @endif
-                                        </p>
-                                    </div>
-                                    <span class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($tl->waktu_tindak_lanjut)->format('d M, H:i') }}</span>
-                                </div>
-                                
-                                <p class="text-sm text-gray-700 mt-2 leading-relaxed">
-                                    {{ $tl->isi_tindak_lanjut }}
-                                </p>
-                            </div>
-                        </div>
-                    @empty
-                        <p class="text-center text-gray-500 text-sm italic py-4">Belum ada tindak lanjut.</p>
-                    @endforelse
+                <div class="flex-1">
+                    <div class="flex justify-between items-start">
+                        <h4 class="font-bold text-gray-900 text-base">{{ $tl->instansi_nama }}</h4>
+                        <span class="text-xs text-gray-400 mt-1">
+                            {{ \Carbon\Carbon::parse($tl->waktu_tindak_lanjut)->format('d M, H:i') }}
+                        </span>
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm mt-1 leading-relaxed">
+                        @php
+                            // Mencari kata setelah "ke " untuk ditebalkan (opsional, styling manual)
+                            $isi = $tl->isi_tindak_lanjut;
+                            $isi = str_replace('Laporan didisposisikan ke', 'Laporan didisposisikan ke <span class="font-bold text-gray-800">', $isi);
+                            if(str_contains($isi, '<span')) $isi .= '</span>'; 
+                        @endphp
+                        {!! $isi !!}
+                    </p>
                 </div>
             </div>
+            <hr class="border-gray-50 last:hidden">
+        @empty
+            <div class="text-center py-8">
+                <div class="inline-block p-3 bg-gray-50 rounded-full mb-2">
+                    <i class="ri-inbox-line text-2xl text-gray-400"></i>
+                </div>
+                <p class="text-gray-500 text-sm">Belum ada tindak lanjut.</p>
+            </div>
+        @endforelse
+    </div>
+</div>
 
             <div id="section-komentar" class="bg-white px-8 py-6 hidden transition-all duration-300 border-b border-gray-200">
                 <h3 class="font-bold text-gray-800 mb-4">Komentar</h3>
