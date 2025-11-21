@@ -39,9 +39,9 @@
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="p-6 border-b border-gray-100 flex justify-between items-center">
         <h3 class="text-lg font-bold text-gray-800">Laporan Yang Menunggu Persetujuan Terbaru:</h3>
-        <a href="#" class="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-            Lihat Semua <i class="ri-arrow-right-line ml-1"></i>
-        </a>
+    <a href="{{ route('admin.laporan.index') }}" class="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+        Lihat Semua <i class="ri-arrow-right-line ml-1"></i>
+    </a>
     </div>
     
     <div class="overflow-x-auto">

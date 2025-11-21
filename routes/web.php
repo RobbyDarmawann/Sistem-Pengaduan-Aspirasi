@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,4 +31,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/laporan', [AdminLaporanController::class, 'index'])->name('laporan.index');
 });

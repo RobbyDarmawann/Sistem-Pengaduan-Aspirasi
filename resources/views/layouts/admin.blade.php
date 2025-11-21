@@ -28,7 +28,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-100 hover:bg-[#1B6CA8] hover:text-white transition-colors">
+                        <a href="{{ route('admin.laporan.index') }}" 
+                        class="flex items-center gap-3 px-4 py-3 rounded-lg {{ request()->routeIs('admin.laporan.*') ? 'bg-[#3282B8] text-white' : 'text-blue-100 hover:bg-[#1B6CA8] hover:text-white' }} transition-colors">
                             <i class="ri-file-list-3-line text-xl"></i>
                             <span class="font-medium">Laporan</span>
                         </a>
