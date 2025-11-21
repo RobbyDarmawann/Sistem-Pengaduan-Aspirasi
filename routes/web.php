@@ -24,12 +24,10 @@ Route::post('/login', [LoginController::class, 'store'])->name('login');
 Route::post('logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
 
 Route::prefix('admin')->name('admin.')->group(function () {
-    
-    // Rute untuk Tamu (Guest) Admin
     Route::middleware('guest:admin')->group(function () {
         Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [AdminLoginController::class, 'login']);
     });
-
+Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
