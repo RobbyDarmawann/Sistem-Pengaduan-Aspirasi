@@ -36,4 +36,12 @@ class Laporan extends Model
     {
         return $this->belongsTo(Pengguna::class, 'pengguna_id');
     }
+
+    public function komentars() {
+    return $this->hasMany(Komentar::class);
+    }
+
+    public function tindakLanjuts() {
+        return $this->hasMany(TindakLanjut::class);
+    }
 }

@@ -43,4 +43,35 @@ public function index(Request $request)
 
         return view('admin.laporan.index', compact('laporan'));
     }
+
+    public function show($id)
+    {
+        // Cari laporan berdasarkan ID, jika tidak ada tampilkan 404
+        $laporan = Laporan::with('pengguna')->findOrFail($id);
+
+        return view('admin.laporan.show', compact('laporan'));
+    }
+
+    /**
+     * Memproses Persetujuan atau Penolakan Laporan.
+     */
+    public function verifikasi(Request $request, $id)
+    {
+        $laporan = Laporan::findOrFail($id);
+
+        // Validasi aksi yang dikirim dari tombol
+        if ($request->action === 'tolak') {
+            $laporan->status = 'ditolak';
+            $pesan = 'Laporan berhasil ditolak.';
+        } elseif ($request->action === 'setujui') {
+            $laporan->status = 'diproses'; // Status naik ke 'diproses' (diteruskan ke instansi)
+            $pesan = 'Laporan disetujui dan diteruskan ke instansi terkait.';
+        } else {
+            return back()->with('error', 'Aksi tidak valid.');
+        }
+
+        $laporan->save();
+
+        return redirect()->route('admin.laporan.index')->with('success', $pesan);
+    }
 }
