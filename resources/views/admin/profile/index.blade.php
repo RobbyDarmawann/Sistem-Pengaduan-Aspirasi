@@ -12,7 +12,7 @@
         <div class="absolute top-16 left-1/2 transform -translate-x-1/2 group">
             <div class="relative">
                 <img id="preview-image" 
-                     src="{{ $admin->profile_photo_path ? asset('storage/' . $admin->profile_photo_path) : asset('assets/images/profil-admin.jpg') }}" 
+                     src="{{ $admin->profile_photo_path ? asset('storage/' . $admin->profile_photo_path) : asset('assets/images/profil-admin.jpg') }}"
                      alt="Admin Avatar" 
                      class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md bg-white">
                 

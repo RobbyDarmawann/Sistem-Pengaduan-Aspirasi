@@ -25,6 +25,10 @@ public function index(Request $request)
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('instansi') && $request->instansi != 'all') {
+            $query->where('instansi_tujuan', $request->instansi);
+        }
+
         // 3. Custom Ordering (Urutan Prioritas)
         // Kita ingin urutan: Belum Disetujui (1) -> Diproses (2) -> Selesai (3) -> Ditolak (4)
         // Kita gunakan orderByRaw dengan CASE statement (Support SQLite & MySQL)
@@ -43,8 +47,38 @@ public function index(Request $request)
         $query->latest();
 
         $laporan = $query->paginate(10);
+        $listInstansi = [
+            "Pemerintah Provinsi Gorontalo",
+            "Pemerintah Kota Gorontalo",
+            "Pemerintah Kecamatan Kota Barat, Kota Gorontalo",
+            "Pemerintah Kecamatan Dungingi, Kota Gorontalo",
+            "Pemerintah Kecamatan Kota Selatan, Kota Gorontalo",
+            "Pemerintah Kecamatan Kota Timur, Kota Gorontalo",
+            "Pemerintah Kecamatan Kota Utara, Kota Gorontalo",
+            "Pemerintah Kecamatan Hulonthalangi, Kota Gorontalo",
+            "Pemerintah Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Asparaga, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Batudaa, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Batudaa Pantai, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Bilato, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Biluhu, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Boliyohuto, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Bongomeme, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Dungaliyo, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Limboto, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Limboto Barat, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Mootilango, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Pulubala, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Tabongo, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Talaga Jaya, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Telaga, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Telaga Biru, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Tibawa, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Tilango, Kabupaten Gorontalo",
+            "Pemerintah Kecamatan Tolangohula, Kabupaten Gorontalo"
+        ];
 
-        return view('admin.laporan.index', compact('laporan'));
+        return view('admin.laporan.index', compact('laporan', 'listInstansi'));
     }
 
     public function show($id)

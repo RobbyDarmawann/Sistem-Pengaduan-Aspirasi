@@ -21,6 +21,8 @@ Route::get('/home', function () {
 Route::get('/laporan/buat/{tipe?}', [LaporanController::class, 'create'])
      ->middleware('auth') // Hanya pengguna yang login bisa akses
      ->name('laporan.create');
+     Route::post('/laporan/simpan', [LaporanController::class, 'store'])->name('laporan.store');
+     
 
 Route::post('/register', [RegisterController::class, 'store'])->name('register');
 Route::post('/login', [LoginController::class, 'store'])->name('login');

@@ -89,55 +89,48 @@
                 </button>
             </div>
 
-           <div id="section-tindak-lanjut" class="bg-white px-8 py-6 border-b border-gray-200 hidden transition-all duration-300">
-    
-    <div class="flex items-center gap-2 mb-6 pb-2 border-b border-gray-100">
-        <i class="ri-history-line text-gray-500"></i>
-        <span class="text-sm font-bold text-gray-600">Riwayat Progres</span>
-        <span class="bg-blue-100 text-blue-600 text-xs px-2 py-0.5 rounded-full font-bold ml-auto">
-            {{ $laporan->tindakLanjuts->count() }} Aktivitas
-        </span>
-    </div>
-    
-    <div class="space-y-6">
-        @forelse($laporan->tindakLanjuts as $tl)
-            <div class="flex gap-4">
-                <div class="flex-shrink-0">
-                    <img src="{{ asset('assets/images/logo-icon.png') }}" 
-                         alt="Logo Instansi" 
-                         class="w-10 h-10 object-contain">
+            <div id="section-tindak-lanjut" class="bg-white px-8 py-6 border-b border-gray-200 hidden transition-all duration-300">
+                <div class="flex items-center gap-2 mb-6 pb-2 border-b border-gray-100">
+                    <i class="ri-history-line text-gray-500"></i>
+                    <span class="text-sm font-bold text-gray-600">Riwayat Progres</span>
+                    <span class="bg-blue-100 text-blue-600 text-xs px-2 py-0.5 rounded-full font-bold ml-auto">
+                        {{ $laporan->tindakLanjuts->count() }} Aktivitas
+                    </span>
                 </div>
-                
-                <div class="flex-1">
-                    <div class="flex justify-between items-start">
-                        <h4 class="font-bold text-gray-900 text-base">{{ $tl->instansi_nama }}</h4>
-                        <span class="text-xs text-gray-400 mt-1">
-                            {{ \Carbon\Carbon::parse($tl->waktu_tindak_lanjut)->format('d M, H:i') }}
-                        </span>
-                    </div>
-                    
-                    <p class="text-gray-600 text-sm mt-1 leading-relaxed">
-                        @php
-                            // Mencari kata setelah "ke " untuk ditebalkan (opsional, styling manual)
-                            $isi = $tl->isi_tindak_lanjut;
-                            $isi = str_replace('Laporan didisposisikan ke', 'Laporan didisposisikan ke <span class="font-bold text-gray-800">', $isi);
-                            if(str_contains($isi, '<span')) $isi .= '</span>'; 
-                        @endphp
-                        {!! $isi !!}
-                    </p>
+                <div class="space-y-6">
+                    @forelse($laporan->tindakLanjuts as $tl)
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0">
+                                <img src="{{ asset('assets/images/logo-icon.png') }}" alt="Logo Instansi" class="w-10 h-10 object-contain">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-bold text-gray-900 text-base">{{ $tl->instansi_nama }}</h4>
+                                    <span class="text-xs text-gray-400 mt-1">
+                                        {{ \Carbon\Carbon::parse($tl->waktu_tindak_lanjut)->format('d M, H:i') }}
+                                    </span>
+                                </div>
+                                <p class="text-gray-600 text-sm mt-1 leading-relaxed">
+                                    @php
+                                        $isi = $tl->isi_tindak_lanjut;
+                                        $isi = str_replace('Laporan didisposisikan ke', 'Laporan didisposisikan ke <span class="font-bold text-gray-800">', $isi);
+                                        if(str_contains($isi, '<span')) $isi .= '</span>'; 
+                                    @endphp
+                                    {!! $isi !!}
+                                </p>
+                            </div>
+                        </div>
+                        <hr class="border-gray-50 last:hidden">
+                    @empty
+                        <div class="text-center py-8">
+                            <div class="inline-block p-3 bg-gray-50 rounded-full mb-2">
+                                <i class="ri-inbox-line text-2xl text-gray-400"></i>
+                            </div>
+                            <p class="text-gray-500 text-sm">Belum ada tindak lanjut.</p>
+                        </div>
+                    @endforelse
                 </div>
             </div>
-            <hr class="border-gray-50 last:hidden">
-        @empty
-            <div class="text-center py-8">
-                <div class="inline-block p-3 bg-gray-50 rounded-full mb-2">
-                    <i class="ri-inbox-line text-2xl text-gray-400"></i>
-                </div>
-                <p class="text-gray-500 text-sm">Belum ada tindak lanjut.</p>
-            </div>
-        @endforelse
-    </div>
-</div>
 
             <div id="section-komentar" class="bg-white px-8 py-6 hidden transition-all duration-300 border-b border-gray-200">
                 <h3 class="font-bold text-gray-800 mb-4">Komentar</h3>
@@ -146,9 +139,9 @@
                     @forelse($laporan->komentars as $komen)
                         <div class="flex gap-3">
                             @if($komen->peran == 'admin')
-                                <img src="{{ asset('assets/images/logo icon.png') }}" class="w-8 h-8 rounded-full border border-gray-200">
+                                <img src="{{ Auth::guard('admin')->user()->profile_photo_path ? asset('storage/' . Auth::guard('admin')->user()->profile_photo_path) : asset('assets/images/profil-admin.jpg') }}" class="w-8 h-8 rounded-full border border-gray-200 object-cover">
                             @else
-                                <img src="{{ asset('assets/images/profil-pengguna.jpg') }}" class="w-8 h-8 rounded-full border border-gray-200">
+                                <img src="{{ asset('assets/images/profil-pengguna.jpg') }}" class="w-8 h-8 rounded-full border border-gray-200 object-cover">
                             @endif
 
                             <div class="flex-1">
@@ -175,11 +168,15 @@
                 </div>
 
                 <div class="flex gap-3 items-center border-t border-gray-100 pt-4">
-                    <img src="{{ asset('assets/images/profil-admin.jpg') }}" class="w-8 h-8 rounded-full border border-gray-200">
+                    <img id="img-input-admin" src="{{ Auth::guard('admin')->user()->profile_photo_path ? asset('storage/' . Auth::guard('admin')->user()->profile_photo_path) : asset('assets/images/profil-admin.jpg') }}" 
+                         class="w-8 h-8 rounded-full border border-gray-200 object-cover">
+                    
                     <div class="flex-1 relative">
                         <input type="text" id="input-komentar" placeholder="Tulis komentar sebagai Admin..." 
-                            class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block pl-4 pr-12 py-2.5"
-                            onkeypress="if(event.key === 'Enter') kirimKomentar({{ $laporan->id }})"> <button onclick="kirimKomentar({{ $laporan->id }})" 
+                               class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block pl-4 pr-12 py-2.5"
+                               onkeypress="if(event.key === 'Enter') kirimKomentar({{ $laporan->id }})">
+                        
+                        <button onclick="kirimKomentar({{ $laporan->id }})" 
                                 class="absolute right-2 top-1/2 -translate-y-1/2 text-blue-600 hover:text-blue-800 p-1 rounded-full hover:bg-blue-50 transition">
                             <i class="ri-send-plane-fill text-lg"></i>
                         </button>
@@ -209,56 +206,29 @@
 </div>
 
 <script>
-    // 1. LOGIKA TOGGLE (GULIR & TUTUP YANG LAIN)
-    function toggleSection(sectionId) {
-        const sectionTindakLanjut = document.getElementById('section-tindak-lanjut');
-        const sectionKomentar = document.getElementById('section-komentar');
-        const btnTindakLanjut = document.getElementById('btn-tindak-lanjut');
-        const btnKomentar = document.getElementById('btn-komentar');
-
-        // Tutup semua dulu
-        sectionTindakLanjut.classList.add('hidden');
-        sectionKomentar.classList.add('hidden');
-        
-        // Reset warna tombol
-        btnTindakLanjut.classList.remove('text-blue-600', 'font-bold');
-        btnKomentar.classList.remove('text-blue-600', 'font-bold');
-
-        // Buka yang dipilih (Toggle Logic)
-        const targetSection = document.getElementById(sectionId);
-    }
-
-    // Fungsi Toggle yang Diperbaiki (Benar-benar Toggle)
+    // 1. TOGGLE SECTION
     function toggleSection(targetId) {
         const allSections = ['section-tindak-lanjut', 'section-komentar'];
         const targetEl = document.getElementById(targetId);
         const isCurrentlyOpen = !targetEl.classList.contains('hidden');
 
-        // 1. Tutup SEMUA section dulu
         allSections.forEach(id => {
             document.getElementById(id).classList.add('hidden');
-            // Reset style tombol (opsional, bisa dikembangkan)
         });
 
-        // 2. Jika target tadi tertutup, maka BUKA. Jika tadi terbuka, biarkan tertutup (efek toggle).
         if (!isCurrentlyOpen) {
             targetEl.classList.remove('hidden');
-            
-            // Scroll halus ke section tersebut
             setTimeout(() => {
                 targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 100);
         }
     }
 
-    // 2. AJAX DUKUNGAN (BATASI 1 KALI)
-function tambahDukungan(id) {
+    // 2. AJAX DUKUNGAN
+    function tambahDukungan(id) {
         const btn = document.getElementById('btn-dukung');
         const icon = document.getElementById('icon-dukung');
         const counter = document.getElementById('count-dukung');
-
-        // Kita hapus pengecekan "if(btn.classList.contains...)" 
-        // karena sekarang tombol boleh diklik berkali-kali.
 
         fetch(`/admin/laporan/${id}/dukung`, {
             method: 'POST',
@@ -270,53 +240,29 @@ function tambahDukungan(id) {
         .then(response => response.json())
         .then(data => {
             if(data.success) {
-                // 1. Update Angka
                 counter.textContent = data.new_count;
-                
-                // 2. Ubah Tampilan Berdasarkan Status dari Controller
                 if (data.status === 'liked') {
-                    // JIKA JADI MENDUKUNG
                     icon.classList.remove('ri-thumb-up-line');
-                    icon.classList.add('ri-thumb-up-fill'); // Icon Isi
-                    btn.classList.add('text-blue-600'); // Warna Biru
+                    icon.classList.add('ri-thumb-up-fill');
+                    btn.classList.add('text-blue-600');
                 } else {
-                    // JIKA BATAL MENDUKUNG
                     icon.classList.remove('ri-thumb-up-fill');
-                    icon.classList.add('ri-thumb-up-line'); // Icon Garis
-                    btn.classList.remove('text-blue-600'); // Warna Abu (Default)
+                    icon.classList.add('ri-thumb-up-line');
+                    btn.classList.remove('text-blue-600');
                 }
-                
-                // PENTING: Jangan gunakan removeAttribute('onclick') 
-                // agar user bisa klik lagi untuk membatalkan.
             }
         });
     }
 
-    // 3. FITUR LAIN (Bagikan & Selesai) - Sama seperti sebelumnya
-    function bagikanLaporan() {
-        Swal.fire({
-            title: 'Bagikan Laporan',
-            showCloseButton: true,
-            showConfirmButton: false,
-            html: `
-                <div class="flex justify-center gap-4 mt-2 mb-4">
-                    <button class="w-12 h-12 bg-green-500 text-white rounded-full hover:scale-110 transition"><i class="ri-whatsapp-line text-2xl"></i></button>
-                    <button class="w-12 h-12 bg-blue-600 text-white rounded-full hover:scale-110 transition"><i class="ri-facebook-fill text-2xl"></i></button>
-                    <button class="w-12 h-12 bg-black text-white rounded-full hover:scale-110 transition"><i class="ri-twitter-x-line text-2xl"></i></button>
-                    <button class="w-12 h-12 bg-gray-200 text-gray-700 rounded-full hover:scale-110 transition" onclick="copyLink()"><i class="ri-link text-2xl"></i></button>
-                </div>
-            `
-        });
-    }
-    // 4. KIRIM KOMENTAR (AJAX)
+    // 3. KIRIM KOMENTAR (Perbaikan di sini agar tidak error sintaks)
     function kirimKomentar(id) {
         const input = document.getElementById('input-komentar');
         const container = document.getElementById('list-komentar');
+        const adminImgSrc = document.getElementById('img-input-admin').src; // Ambil URL foto dari elemen HTML yang sudah ada
         const isi = input.value.trim();
 
-        if (!isi) return; // Jangan kirim jika kosong
+        if (!isi) return;
 
-        // Disable input sementara
         input.disabled = true;
 
         fetch(`/admin/laporan/${id}/komentar`, {
@@ -330,9 +276,10 @@ function tambahDukungan(id) {
         .then(response => response.json())
         .then(data => {
             if(data.success) {
-                // 1. Buat HTML Komentar Baru
+                // Kita gunakan Template Literal JS (bukan Blade) di sini
                 const htmlBaru = `
-                    <div class="flex gap-3 animate-pulse"> <img src="{{ asset('assets/images/logo-icon.png') }}" class="w-8 h-8 rounded-full border border-gray-200">
+                    <div class="flex gap-3 animate-pulse"> 
+                        <img src="${adminImgSrc}" class="w-8 h-8 rounded-full border border-gray-200 object-cover">
                         <div class="flex-1">
                             <div class="bg-gray-100 rounded-2xl px-4 py-2 inline-block max-w-[90%]">
                                 <h4 class="font-bold text-xs text-gray-900 mb-1">
@@ -348,30 +295,38 @@ function tambahDukungan(id) {
                     </div>
                 `;
 
-                // 2. Masukkan ke dalam list (paling bawah)
-                // Cek apakah ada pesan "Belum ada komentar", jika ada hapus dulu
                 if(container.innerHTML.includes('Belum ada komentar')) {
                     container.innerHTML = '';
                 }
                 
                 container.insertAdjacentHTML('beforeend', htmlBaru);
-
-                // 3. Scroll ke komentar terbaru
                 container.scrollTop = container.scrollHeight;
 
-                // 4. Reset Input
                 input.value = '';
                 input.disabled = false;
                 input.focus();
-
-                // 5. Update Angka Komentar di Tombol Atas (Opsional)
-                // Anda bisa menambahkan logic update angka di sini jika mau
             }
         })
         .catch(error => {
             console.error('Error:', error);
             input.disabled = false;
             Swal.fire('Error', 'Gagal mengirim komentar.', 'error');
+        });
+    }
+
+    function bagikanLaporan() {
+        Swal.fire({
+            title: 'Bagikan Laporan',
+            showCloseButton: true,
+            showConfirmButton: false,
+            html: `
+                <div class="flex justify-center gap-4 mt-2 mb-4">
+                    <button class="w-12 h-12 bg-green-500 text-white rounded-full hover:scale-110 transition"><i class="ri-whatsapp-line text-2xl"></i></button>
+                    <button class="w-12 h-12 bg-blue-600 text-white rounded-full hover:scale-110 transition"><i class="ri-facebook-fill text-2xl"></i></button>
+                    <button class="w-12 h-12 bg-black text-white rounded-full hover:scale-110 transition"><i class="ri-twitter-x-line text-2xl"></i></button>
+                    <button class="w-12 h-12 bg-gray-200 text-gray-700 rounded-full hover:scale-110 transition" onclick="copyLink()"><i class="ri-link text-2xl"></i></button>
+                </div>
+            `
         });
     }
 
@@ -399,7 +354,6 @@ function tambahDukungan(id) {
 </script>
 
 <style>
-    /* Custom Scrollbar untuk komentar */
     .custom-scrollbar::-webkit-scrollbar { width: 6px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
