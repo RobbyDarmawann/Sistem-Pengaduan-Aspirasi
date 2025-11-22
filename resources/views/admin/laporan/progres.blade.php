@@ -101,7 +101,7 @@
                     @forelse($laporan->tindakLanjuts as $tl)
                         <div class="flex gap-4">
                             <div class="flex-shrink-0">
-                                <img src="{{ asset('assets/images/logo-icon.png') }}" alt="Logo Instansi" class="w-10 h-10 object-contain">
+                                <img src="{{ asset('assets/images/gorontalo.png') }}" alt="Logo Instansi" class="w-10 h-10 object-contain">
                             </div>
                             <div class="flex-1">
                                 <div class="flex justify-between items-start">

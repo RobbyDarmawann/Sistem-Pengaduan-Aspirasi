@@ -7,6 +7,7 @@ use App\Models\Laporan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
+
 class LaporanController extends Controller
 {
     public function create($tipe = 'pengaduan')

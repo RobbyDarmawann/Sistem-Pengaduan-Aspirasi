@@ -5,17 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TindakLanjut extends Model
+class Notifikasi extends Model
 {
     use HasFactory;
 
-    protected $table = 'tindak_lanjuts'; // Nama tabel di DB
-
     protected $fillable = [
-        'laporan_id',
-        'instansi_nama',
-        'isi_tindak_lanjut',
-        'waktu_tindak_lanjut',
+        'pengguna_id', 'laporan_id', 'judul', 'pesan', 'tipe', 'is_read'
     ];
 
     public function laporan()

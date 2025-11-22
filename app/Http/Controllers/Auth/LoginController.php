@@ -39,7 +39,7 @@ class LoginController extends Controller
             // 4. Kirim respon JSON (SUDAH BENAR)
             return response()->json([
                 'success' => true,
-                'redirect_url' => '/home' // Pastikan rute ini ada
+                'redirect_url' => url('/') // Pastikan rute ini ada
             ], 200);
         }
 

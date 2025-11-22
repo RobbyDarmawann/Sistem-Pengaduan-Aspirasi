@@ -45,6 +45,11 @@ return [
             'driver' => 'session',
             'provider' => 'admins', // Nama provider baru
         ],
+        // TAMBAHKAN INI
+        'instansi' => [
+            'driver' => 'session',
+            'provider' => 'instansi_provider', // Nama provider
+        ],
     ],
 
     /*
@@ -73,6 +78,10 @@ return [
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class, // Mengarah ke model Admin baru
+        ],
+        'instansi_provider' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Instansi::class,
         ],
     ],
 

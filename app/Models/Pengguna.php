@@ -37,8 +37,13 @@ class Pengguna extends Authenticatable
         'job',
         'domicile',
         'address',
-        'report_count',     
-        'aspiration_count', 
+        'report_count',
+        'aspiration_count',
+        'birth_place',      // <-- PASTIKAN INI ADA
+        'profile_photo_path', // <-- WAJIB ADA
+        'cover_photo_path',   // <-- WAJIB ADA
+        'show_aspirasi',      // <-- WAJIB ADA
+        'show_pengaduan',
     ];
 
     protected $hidden = [

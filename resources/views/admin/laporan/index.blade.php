@@ -105,7 +105,11 @@
                     </td>
 
                     <td class="px-6 py-4 font-medium text-gray-600">
-                        {{ $item->pengguna->full_name ?? 'Anonim' }}
+                        @if($item->visibilitas == 'anonim')
+                            <span class="italic text-gray-400">Anonim</span>
+                        @else
+                            {{ $item->pengguna->full_name ?? 'User Terhapus' }}
+                        @endif
                     </td>
 
                     <td class="px-6 py-4 font-medium text-gray-500 text-xs">
