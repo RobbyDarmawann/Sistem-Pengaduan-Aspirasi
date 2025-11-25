@@ -15,7 +15,7 @@ class AdminSeeder extends Seeder
             'full_name' => 'Admin SuaraGO',
             'username'  => 'admin',
             'email'     => 'admin@suarago.com',
-            'password'  => Hash::make('password'), 
+            'password'  => Hash::make('admin'), 
         ]);
     }
 }

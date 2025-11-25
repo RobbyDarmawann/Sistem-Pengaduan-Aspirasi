@@ -9,12 +9,12 @@ class TindakLanjut extends Model
 {
     use HasFactory;
 
-    protected $table = 'tindak_lanjuts'; // Nama tabel di DB
+    protected $table = 'tindak_lanjuts'; // Pastikan nama tabel benar (jamak)
 
     protected $fillable = [
         'laporan_id',
-        'instansi_nama',
-        'isi_tindak_lanjut',
+        'instansi_nama',     // <--- WAJIB ADA
+        'isi_tindak_lanjut', // <--- WAJIB ADA
         'waktu_tindak_lanjut',
     ];
 

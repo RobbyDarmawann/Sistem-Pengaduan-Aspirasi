@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; // <--- JANGAN LUPA INI
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,17 +11,26 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-->withMiddleware(function (Middleware $middleware) {
+    ->withMiddleware(function (Middleware $middleware) {
+        
+        // Mengatur arah redirect jika user belum login
         $middleware->redirectGuestsTo(function (Request $request) {
-            // Jika request adalah untuk 'admin' atau 'admin/*'
+            
+            // 1. Jika mencoba masuk halaman Admin -> Ke Login Admin
             if ($request->is('admin') || $request->is('admin/*')) {
-                // Arahkan ke rute login admin
                 return route('admin.login');
             }
-            // Jika tidak, arahkan ke halaman utama (untuk pengguna)
+            
+            // 2. Jika mencoba masuk halaman Instansi -> Ke Login Instansi
+            if ($request->is('instansi') || $request->is('instansi/*')) {
+                return route('instansi.login');
+            }
+
+            // 3. Jika Pengguna biasa -> Ke Halaman Utama (Modal Login ada di sana)
             return url('/');
         });
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
-
+        //
     })->create();

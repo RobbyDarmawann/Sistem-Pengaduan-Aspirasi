@@ -83,8 +83,8 @@
                         <div class="text-xs text-gray-500">
                             Kategori: <span class="font-semibold text-gray-700">{{ $item->kategori }}</span>
                         </div>
-                        <a href="#" class="text-sm font-bold text-[#145D71] hover:underline flex items-center gap-1">
-                            Tindaklanjuti <i class="ri-arrow-right-line"></i>
+                        <a href="{{ route('instansi.laporan.show', $item->id) }}" class="...">
+                            Tindaklanjuti
                         </a>
                     </div>
                 </div>
@@ -126,8 +126,8 @@
                         <div class="text-xs text-gray-500">
                             Kategori: <span class="font-semibold text-gray-700">{{ $item->kategori }}</span>
                         </div>
-                        <a href="#" class="text-sm font-bold text-[#145D71] hover:underline flex items-center gap-1">
-                            Tindaklanjuti <i class="ri-arrow-right-line"></i>
+                        <a href="{{ route('instansi.laporan.show', $item->id) }}" class="...">
+                            Tindaklanjuti
                         </a>
                     </div>
                 </div>
