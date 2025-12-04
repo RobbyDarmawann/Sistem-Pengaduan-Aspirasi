@@ -12,7 +12,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet"/>
 
-    {{-- Memanggil Script Utama & Landing JS --}}
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/landing.js'])
 
     <style>
@@ -27,26 +26,25 @@
     </style>
     @stack('styles')
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 flex flex-col min-h-screen">
 
-    {{-- Navbar Partial --}}
+    {{-- Navbar --}}
     @include('partials.navbar')
     
-    <main>
+    <main class="flex-grow">
         @yield('content')
     </main>
 
-    {{-- Footer Partial --}}
+    {{-- Footer --}}
     @include('partials.footer')
 
-    {{-- Modal Auth Partial --}}
+    {{-- Modal Auth --}}
     @include('partials.auth-modal')
 
-    {{-- Script Tambahan untuk Logout & Toast (Jika tidak ada di landing.js) --}}
+    {{-- Script Global --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            
-            // --- Fungsi Toast Notification ---
+            // Toast Notification Global
             window.showToast = function(message, type = 'success') {
                 const toastId = 'dynamic-toast-message';
                 let toastMessage = document.getElementById(toastId);
@@ -60,14 +58,12 @@
                 
                 document.body.appendChild(toastMessage);
                 
-                // Hapus otomatis setelah 3 detik
                 setTimeout(() => {
                     toastMessage.style.opacity = '0';
                     setTimeout(() => toastMessage.remove(), 500);
                 }, 3000);
             };
 
-            // --- Cek Flash Message dari Session (PHP) ---
             @if(session('success'))
                 showToast("{{ session('success') }}", 'success');
             @endif
@@ -75,8 +71,6 @@
             @if(session('error'))
                 showToast("{{ session('error') }}", 'error');
             @endif
-
-
         });
     </script>
     

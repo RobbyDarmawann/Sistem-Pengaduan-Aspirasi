@@ -78,8 +78,15 @@
                     Komentar <span class="bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded text-xs">{{ $laporan->komentars->count() }}</span>
                 </button>
 
-                @php $isLiked = session()->has('liked_laporan_' . $laporan->id); @endphp
-                <button id="btn-dukung" onclick="tambahDukungan({{ $laporan->id }})" class="flex items-center gap-2 transition focus:outline-none {{ $isLiked ? 'text-blue-600 cursor-default' : 'hover:text-blue-600' }}">
+                @php 
+                    $isLiked = \App\Models\Dukungan::where('laporan_id', $laporan->id)
+                        ->where('user_id', Auth::guard('admin')->user()->aid)
+                        ->where('user_type', 'admin')
+                        ->exists();
+                @endphp
+
+                <button id="btn-dukung" onclick="tambahDukungan({{ $laporan->id }})" 
+                        class="flex items-center gap-2 transition focus:outline-none {{ $isLiked ? 'text-blue-600' : 'hover:text-blue-600' }}">
                     <i class="{{ $isLiked ? 'ri-thumb-up-fill' : 'ri-thumb-up-line' }} text-lg" id="icon-dukung"></i> 
                     Mendukung <span id="count-dukung">{{ $laporan->jumlah_dukungan }}</span>
                 </button>
@@ -90,6 +97,7 @@
             </div>
 
             <div id="section-tindak-lanjut" class="bg-white px-8 py-6 border-b border-gray-200 hidden transition-all duration-300">
+                
                 <div class="flex items-center gap-2 mb-6 pb-2 border-b border-gray-100">
                     <i class="ri-history-line text-gray-500"></i>
                     <span class="text-sm font-bold text-gray-600">Riwayat Progres</span>
@@ -97,12 +105,20 @@
                         {{ $laporan->tindakLanjuts->count() }} Aktivitas
                     </span>
                 </div>
+                
                 <div class="space-y-6">
                     @forelse($laporan->tindakLanjuts as $tl)
                         <div class="flex gap-4">
                             <div class="flex-shrink-0">
-                                <img src="{{ asset('assets/images/gorontalo.png') }}" alt="Logo Instansi" class="w-10 h-10 object-contain">
+                                @if($tl->instansi_nama == 'Admin SuaraGO')
+                                    <img src="{{ Auth::guard('admin')->user()->profile_photo_path ? asset('storage/' . Auth::guard('admin')->user()->profile_photo_path) : asset('assets/images/profil-admin.jpg') }}" 
+                                         class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                @else
+                                    <img src="{{ asset('assets/images/gorontalo.png') }}" 
+                                         class="w-10 h-10 object-contain border border-gray-100 rounded-full p-1">
+                                @endif
                             </div>
+                            
                             <div class="flex-1">
                                 <div class="flex justify-between items-start">
                                     <h4 class="font-bold text-gray-900 text-base">{{ $tl->instansi_nama }}</h4>
@@ -110,6 +126,7 @@
                                         {{ \Carbon\Carbon::parse($tl->waktu_tindak_lanjut)->format('d M, H:i') }}
                                     </span>
                                 </div>
+                                
                                 <p class="text-gray-600 text-sm mt-1 leading-relaxed">
                                     @php
                                         $isi = $tl->isi_tindak_lanjut;

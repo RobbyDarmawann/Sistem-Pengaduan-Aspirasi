@@ -9,14 +9,12 @@ class WelcomeController extends Controller
 {
     public function index()
     {
-        // Ambil laporan yang statusnya 'selesai' atau 'diproses' 
-        // DAN visibilitasnya 'publik' atau 'anonim' (bukan rahasia)
-        // Urutkan dari yang terbaru, ambil 5 data
-        $laporanTerhangat = Laporan::with('pengguna')
-            ->whereIn('status', ['diproses', 'selesai'])
-            ->whereIn('visibilitas', ['publik', 'anonim'])
-            ->latest()
-            ->take(5)
+        // LOGIKA LAPORAN TERHANGAT (Berdasarkan View Terbanyak)
+        $laporanTerhangat = Laporan::with('pengguna', 'komentars') // Load relasi
+            ->whereIn('status', ['diproses', 'selesai']) // Hanya yang sudah diproses/selesai
+            ->whereIn('visibilitas', ['publik', 'anonim']) // Hanya yang publik/anonim
+            ->orderBy('jumlah_dilihat', 'desc') // <--- URUTKAN DARI VIEW TERBANYAK
+            ->take(5) // Ambil 5 saja
             ->get();
 
         return view('welcome', compact('laporanTerhangat'));

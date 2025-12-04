@@ -8,6 +8,7 @@
         <ul class="hidden md:flex items-center space-x-6">
             <li><a href="{{ url('/') }}#beranda" class="font-medium text-[#ffffff] hover:text-blue-200 transition-colors">Beranda</a></li>
             <li><a href="{{ url('/') }}#tentang" class="font-medium text-[#ffffff] hover:text-blue-200 transition-colors">Tentang</a></li>
+            <li><a href="{{ route('laporan.public') }}" class="font-medium text-[#ffffff] hover:text-blue-200 transition-colors {{ request()->routeIs('laporan.public') ? 'font-bold border-b-2 border-white pb-1' : '' }}">Laporan</a></li>
             <li><a href="{{ url('/') }}#layanan" class="font-medium text-[#ffffff] hover:text-blue-200 transition-colors">Layanan</a></li>
             
             @auth
@@ -76,6 +77,11 @@
         <ul class="flex flex-col py-2">
             <li><a href="{{ url('/') }}#beranda" class="mobile-menu-link block py-3 px-6 text-gray-600 hover:bg-blue-50 font-medium">Beranda</a></li>
             <li><a href="{{ url('/') }}#tentang" class="mobile-menu-link block py-3 px-6 text-gray-600 hover:bg-blue-50 font-medium">Tentang</a></li>
+            <li>
+    <a href="{{ route('laporan.public') }}" class="mobile-menu-link block py-3 px-6 text-gray-600 hover:bg-blue-50 font-medium">
+        Jelajah Laporan
+    </a>
+</li>
             <li><a href="{{ url('/') }}#layanan" class="mobile-menu-link block py-3 px-6 text-gray-600 hover:bg-blue-50 font-medium">Layanan</a></li>
             
             <div class="border-t border-gray-100 my-2"></div>

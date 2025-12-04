@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Laporan;
-use App\Models\TindakLanjut; // <--- WAJIB ADA BARIS INI!
-use App\Models\Komentar;     // <--- WAJIB ADA UNTUK KOMENTAR
+use App\Models\TindakLanjut; 
+use App\Models\Komentar;     
+use App\Models\Dukungan;
 use Illuminate\Support\Facades\Auth;
 
 class LaporanController extends Controller
@@ -140,19 +141,28 @@ class LaporanController extends Controller
     public function dukung(Request $request, $id)
     {
         $laporan = Laporan::findOrFail($id);
-        
-        $sessionKey = 'liked_laporan_' . $id;
+        $user = Auth::guard('admin')->user(); // Ambil Admin yang login
 
-        if ($request->session()->has($sessionKey)) {
-             // BATAL DUKUNG
-             $laporan->decrement('jumlah_dukungan');
-             $request->session()->forget($sessionKey);
-             $status = 'unliked';
+        // Cek apakah sudah ada data di database
+        $existingDukungan = Dukungan::where('laporan_id', $id)
+            ->where('user_id', $user->aid) // Pakai ID Admin (aid)
+            ->where('user_type', 'admin')
+            ->first();
+
+        if ($existingDukungan) {
+            // KONDISI: SUDAH ADA -> HAPUS (UNLIKE)
+            $existingDukungan->delete();
+            $laporan->decrement('jumlah_dukungan');
+            $status = 'unliked';
         } else {
-             // DUKUNG
-             $laporan->increment('jumlah_dukungan');
-             $request->session()->put($sessionKey, true);
-             $status = 'liked';
+            // KONDISI: BELUM ADA -> BUAT BARU (LIKE)
+            Dukungan::create([
+                'laporan_id' => $id,
+                'user_id' => $user->aid, // ID Admin
+                'user_type' => 'admin'
+            ]);
+            $laporan->increment('jumlah_dukungan');
+            $status = 'liked';
         }
 
         return response()->json([

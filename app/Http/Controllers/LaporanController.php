@@ -1,83 +1,87 @@
 <?php
 
-namespace App\Http\Controllers\Instansi;
-
-use App\Http\Controllers\Controller;
+namespace App\Http\Controllers; // <--- Perhatikan Namespace ini (Tanpa \Instansi)
+use App\Models\TindakLanjut;
 use Illuminate\Http\Request;
 use App\Models\Laporan;
-use App\Models\TindakLanjut;
 use App\Models\Komentar;
-use App\Models\Notifikasi;
+use App\Models\Dukungan;
 use Illuminate\Support\Facades\Auth;
 
 class LaporanController extends Controller
 {
+    /**
+     * Menampilkan form buat laporan.
+     */
+    public function create($tipe = 'pengaduan')
+    {
+        return view('laporan.create', [
+            'tipe' => $tipe
+        ]);
+    }
+
+    /**
+     * Menyimpan laporan baru.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'isi_laporan' => 'required|string',
+            'kategori' => 'required|string',
+            'instansi_tujuan' => 'required|string',
+            'tipe_laporan' => 'required|in:pengaduan,aspirasi',
+            'visibilitas' => 'required',
+            'lampiran' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'tanggal_kejadian' => 'nullable|date',
+            'lokasi_kejadian' => 'nullable|string',
+        ]);
+
+        $lampiranPath = null;
+        if ($request->hasFile('lampiran')) {
+            $lampiranPath = $request->file('lampiran')->store('lampiran-laporan', 'public');
+        }
+
+        Laporan::create([
+            'pengguna_id' => Auth::id(),
+            'tipe_laporan' => $request->tipe_laporan,
+            'judul' => $request->judul,
+            'isi_laporan' => $request->isi_laporan,
+            'tanggal_kejadian' => $request->tanggal_kejadian,
+            'lokasi_kejadian' => $request->lokasi_kejadian,
+            'kategori' => $request->kategori,
+            'instansi_tujuan' => $request->instansi_tujuan,
+            'visibilitas' => $request->visibilitas,
+            'status' => 'belum_disetujui',
+            'lampiran' => $lampiranPath,
+        ]);
+
+        return redirect('/')->with('success', 'Laporan Anda berhasil dikirim dan menunggu verifikasi.');
+    }
+
     public function show($id)
     {
         $laporan = Laporan::with(['pengguna', 'komentars', 'tindakLanjuts'])->findOrFail($id);
-        $instansi = Auth::guard('instansi')->user();
-
-        // Pastikan instansi hanya melihat laporan miliknya
-        // PERBAIKAN: Gunakan 'instance_name'
-        if ($laporan->instansi_tujuan !== $instansi->instance_name) {
-            abort(403, 'Anda tidak memiliki akses ke laporan ini.');
-        }
-
+        
+        // Tambah jumlah dilihat setiap kali dibuka
         $laporan->increment('jumlah_dilihat');
 
-        return view('instansi.laporan.show', compact('laporan'));
+        return view('laporan.show', compact('laporan'));
     }
 
-    public function storeTindakLanjut(Request $request, $id)
-    {
-        $request->validate(['isi_tindak_lanjut' => 'required|string']);
-
-        $laporan = Laporan::findOrFail($id);
-        $instansi = Auth::guard('instansi')->user();
-        dd($instansi);
-        // 1. Simpan Tindak Lanjut
-        TindakLanjut::create([
-            'laporan_id' => $id,
-            
-            // --- PERBAIKAN DI SINI (Ganti nama_instansi jadi instance_name) ---
-            'instansi_nama' => $instansi->instance_name, 
-            // ------------------------------------------------------------------
-
-            'isi_tindak_lanjut' => $request->isi_tindak_lanjut,
-            'waktu_tindak_lanjut' => now(),
-        ]);
-
-        // 2. Buat Notifikasi ke Pengguna
-        Notifikasi::create([
-            'pengguna_id' => $laporan->pengguna_id,
-            'laporan_id' => $laporan->id,
-            'judul' => 'Tindak Lanjut Baru',
-            
-            // --- PERBAIKAN DI SINI JUGA ---
-            'pesan' => $instansi->instance_name . ' telah memberikan update terbaru mengenai laporan Anda.',
-            // ------------------------------
-
-            'tipe' => 'info'
-        ]);
-
-        return back()->with('success', 'Tindak lanjut berhasil dikirim.');
-    }
-
+    // Method KIRIM KOMENTAR
     public function storeKomentar(Request $request, $id)
     {
-        $request->validate(['isi_komentar' => 'required|string']);
-        $instansi = Auth::guard('instansi')->user();
+        $request->validate(['isi_komentar' => 'required|string|max:500']);
+
+        $user = Auth::user();
 
         $komentar = Komentar::create([
             'laporan_id' => $id,
-            'pengguna_id' => null,
-            
-            // --- PERBAIKAN DI SINI JUGA ---
-            'nama_pengomentar' => $instansi->instance_name, 
-            // ------------------------------
-
+            'pengguna_id' => $user->id, // ID Pengguna yang login
+            'nama_pengomentar' => $user->full_name,
             'isi_komentar' => $request->isi_komentar,
-            'peran' => 'instansi',
+            'peran' => 'pengguna', // Penanda peran
         ]);
 
         return response()->json([
@@ -86,47 +90,60 @@ class LaporanController extends Controller
                 'nama' => $komentar->nama_pengomentar,
                 'isi' => $komentar->isi_komentar,
                 'waktu' => $komentar->created_at->diffForHumans(),
-                'peran' => 'instansi'
+                'peran' => 'pengguna',
+                // Kirim URL foto profil untuk JS
+                'foto' => $user->profile_photo_path ? asset('storage/' . $user->profile_photo_path) : asset('assets/images/profil-pengguna.jpg')
             ]
         ]);
     }
-    // ... method lainnya (selesai, dukung) tetap sama ...
-    public function selesai($id)
+    public function storeTindakLanjut(Request $request, $id)
     {
-        $laporan = Laporan::findOrFail($id);
-        $laporan->status = 'selesai';
-        $laporan->save();
+        $request->validate(['isi_tindak_lanjut' => 'required|string']);
 
-        Notifikasi::create([
-            'pengguna_id' => $laporan->pengguna_id,
-            'laporan_id' => $laporan->id,
-            'judul' => 'Laporan Selesai',
-            'pesan' => 'Laporan Anda telah ditandai selesai oleh instansi terkait.',
-            'tipe' => 'success'
+        $laporan = Laporan::findOrFail($id);
+        
+        // Pastikan yang mengisi adalah pemilik laporan
+        if ($laporan->pengguna_id != Auth::id()) {
+            abort(403, 'Anda tidak berhak menanggapi laporan ini.');
+        }
+
+        TindakLanjut::create([
+            'laporan_id' => $id,
+            // Kita beri label khusus agar beda dengan Instansi
+            'instansi_nama' => 'Tanggapan Pelapor', 
+            'isi_tindak_lanjut' => $request->isi_tindak_lanjut,
+            'waktu_tindak_lanjut' => now(),
         ]);
 
-        return redirect()->route('instansi.dashboard')->with('success', 'Laporan berhasil diselesaikan.');
+        return back()->with('success', 'Tanggapan tindak lanjut berhasil dikirim.');
     }
-
+    // Method DUKUNG (Sama seperti Admin/Instansi tapi pakai Auth user)
     public function dukung(Request $request, $id)
     {
         $laporan = Laporan::findOrFail($id);
-        $sessionKey = 'liked_laporan_' . $id; 
+        $user = Auth::user();
 
-        if ($request->session()->has($sessionKey)) {
-             $laporan->decrement('jumlah_dukungan');
-             $request->session()->forget($sessionKey);
-             $status = 'unliked';
+        $existingDukungan = Dukungan::where('laporan_id', $id)
+            ->where('user_id', $user->id)
+            ->where('user_type', 'pengguna')
+            ->first();
+
+        if ($existingDukungan) {
+            // UNLIKE
+            $existingDukungan->delete();
+            $laporan->decrement('jumlah_dukungan');
+            $status = 'unliked';
         } else {
-             $laporan->increment('jumlah_dukungan');
-             $request->session()->put($sessionKey, true);
-             $status = 'liked';
+            // LIKE
+            Dukungan::create([
+                'laporan_id' => $id,
+                'user_id' => $user->id,
+                'user_type' => 'pengguna'
+            ]);
+            $laporan->increment('jumlah_dukungan');
+            $status = 'liked';
         }
 
-        return response()->json([
-            'success' => true, 
-            'new_count' => $laporan->jumlah_dukungan,
-            'status' => $status
-        ]);
+        return response()->json(['success' => true, 'new_count' => $laporan->jumlah_dukungan, 'status' => $status]);
     }
 }

@@ -14,11 +14,11 @@ use App\Http\Controllers\Instansi\DashboardController as InstansiDashboard;
 use App\Http\Controllers\Instansi\Auth\LoginController as InstansiLoginController;
 use App\Http\Controllers\Instansi\ProfileController as InstansiProfileController;
 use App\Http\Controllers\Instansi\LaporanController as InstansiLaporanController;
+use App\Http\Controllers\PublicLaporanController;
+use App\Http\Controllers\WelcomeController;
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
 
 Route::get('/laporan/buat/{tipe?}', [LaporanController::class, 'create'])
@@ -29,6 +29,11 @@ Route::get('/laporan/buat/{tipe?}', [LaporanController::class, 'create'])
      Route::get('/profil/ubah', [ProfilController::class, 'edit'])->name('profil.edit');
     Route::put('/profil/update', [ProfilController::class, 'update'])->name('profil.update');
     Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
+    Route::get('/laporan/{id}', [LaporanController::class, 'show'])->name('laporan.show');
+    
+    Route::post('/laporan/{id}/tindak-lanjut', [LaporanController::class, 'storeTindakLanjut'])->name('laporan.tindak-lanjut.store');
+    Route::post('/laporan/{id}/komentar', [LaporanController::class, 'storeKomentar'])->name('laporan.komentar.store');
+    Route::post('/laporan/{id}/dukung', [LaporanController::class, 'dukung'])->name('laporan.dukung.store');
 
 Route::post('/register', [RegisterController::class, 'store'])->name('register');
 Route::post('/login', [LoginController::class, 'store'])->name('login');
@@ -75,3 +80,4 @@ Route::prefix('instansi')->name('instansi.')->group(function () {
         Route::post('/logout', [InstansiLoginController::class, 'logout'])->name('logout');
     });
 });
+Route::get('/jelajah', [PublicLaporanController::class, 'index'])->name('laporan.public');

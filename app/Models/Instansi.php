@@ -10,8 +10,8 @@ class Instansi extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'instansi'; // Sesuai migrasi Anda
-    protected $primaryKey = 'gid'; // Sesuai migrasi Anda
+    protected $table = 'instansi';
+    protected $primaryKey = 'gid'; 
     
     protected $fillable = [
         'username',
@@ -20,9 +20,8 @@ class Instansi extends Authenticatable
         'email',
         'phone_number',
         'nip',
-        'instance_name', // <--- INI KUNCINYA (Harus sama dengan dropdown di form laporan)
+        'instance_name', 
         'address',
-        // Kolom count bisa diisi nanti atau dihitung otomatis
     ];
 
     protected $hidden = [

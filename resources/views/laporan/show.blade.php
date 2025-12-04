@@ -1,18 +1,18 @@
-@extends('layouts.instansi')
+@extends('layouts.app')
 
-@section('title', 'Tindak Lanjut Laporan')
+@section('title', 'Detail Laporan - SuaraGO')
 
 @section('content')
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<div class="flex justify-center pb-20">
-    <div class="w-full max-w-4xl">
+<div class="container mx-auto px-5 md:px-20 py-10">
+    <div class="w-full max-w-4xl mx-auto">
         
-        <div class="flex items-center justify-between mb-6">
-            <a href="{{ route('instansi.dashboard') }}" class="px-4 py-2 bg-[#145D71] text-white rounded-lg font-medium hover:bg-[#0F4C5C] transition-colors flex items-center gap-2">
-                <i class="ri-arrow-left-line"></i> Kembali
-            </a>
+        <div class="mb-6">
+        <a href="{{ url()->previous() }}" class="inline-flex items-center gap-2 px-4 py-2 bg-[#3996AF] text-white rounded-lg font-medium hover:bg-[#2C7A90] transition-colors">
+            <i class="ri-arrow-left-line"></i> Kembali
+        </a>
         </div>
 
         <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 relative">
@@ -24,7 +24,6 @@
                                     ? asset('assets/images/logo-icon.png') 
                                     : ($laporan->pengguna->profile_photo_path ? asset('storage/' . $laporan->pengguna->profile_photo_path) : asset('assets/images/profil-pengguna.jpg')) }}" 
                              class="w-14 h-14 rounded-full object-cover border border-gray-200">
-                        
                         <div>
                             <div class="flex items-center gap-2 mb-1">
                                 <h3 class="font-bold text-gray-800 text-lg">{{ $laporan->visibilitas == 'anonim' ? 'Anonim' : $laporan->pengguna->full_name }}</h3>
@@ -39,70 +38,73 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="text-right">
-                        @if($laporan->status == 'selesai')
-                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">Selesai</span>
-                        @else
-                            <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold">Sedang Diproses</span>
-                        @endif
+                        @php
+                            $statusClass = match($laporan->status) {
+                                'belum_disetujui' => 'bg-red-100 text-red-700',
+                                'diproses' => 'bg-yellow-100 text-yellow-700',
+                                'selesai' => 'bg-green-100 text-green-700',
+                                default => 'bg-gray-100 text-gray-700',
+                            };
+                            $statusText = match($laporan->status) {
+                                'belum_disetujui' => 'Menunggu Verifikasi',
+                                'diproses' => 'Sedang Diproses',
+                                'selesai' => 'Selesai',
+                                default => ucfirst($laporan->status),
+                            };
+                        @endphp
+                        <span class="px-3 py-1 rounded-full text-xs font-bold {{ $statusClass }}">{{ $statusText }}</span>
                     </div>
                 </div>
-
                 <div class="mt-6">
                     <h1 class="text-2xl font-bold text-gray-900 mb-3">{{ $laporan->judul }}</h1>
                     <p class="text-gray-700 leading-relaxed mb-4 whitespace-pre-line">{{ $laporan->isi_laporan }}</p>
                     @if($laporan->lampiran)
-                        <img src="{{ asset('storage/' . $laporan->lampiran) }}" class="h-48 w-auto object-cover rounded-lg cursor-pointer hover:opacity-90" onclick="window.open(this.src)">
+                        <img src="{{ asset('storage/' . $laporan->lampiran) }}" class="h-64 w-auto object-cover rounded-lg cursor-pointer hover:opacity-90 transition shadow-sm" onclick="window.open(this.src)">
                     @endif
                 </div>
             </div>
 
             <div class="px-8 py-4 bg-gray-50 border-b border-gray-200 flex flex-wrap gap-6 text-sm font-medium text-gray-600 select-none">
-                <button onclick="toggleSection('section-tindak-lanjut')" class="flex items-center gap-2 hover:text-[#145D71] transition focus:outline-none">
+                <button onclick="toggleSection('section-tindak-lanjut')" class="flex items-center gap-2 hover:text-[#3996AF] transition focus:outline-none">
                     <i class="ri-loop-left-line text-lg"></i> 
                     Tindak Lanjut <span class="bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded text-xs">{{ $laporan->tindakLanjuts->count() }}</span>
                 </button>
 
-                <button onclick="toggleSection('section-komentar')" class="flex items-center gap-2 hover:text-[#145D71] transition focus:outline-none">
+                <button onclick="toggleSection('section-komentar')" class="flex items-center gap-2 hover:text-[#3996AF] transition focus:outline-none">
                     <i class="ri-chat-1-line text-lg"></i> 
                     Komentar <span class="bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded text-xs">{{ $laporan->komentars->count() }}</span>
                 </button>
 
                 @php 
-                    // Cek Database: Apakah Instansi ini sudah like laporan ini?
-                    $isLiked = \App\Models\Dukungan::where('laporan_id', $laporan->id)
-                        ->where('user_id', Auth::guard('instansi')->user()->gid)
-                        ->where('user_type', 'instansi')
-                        ->exists();
+                    $isLiked = \App\Models\Dukungan::where('laporan_id', $laporan->id)->where('user_id', Auth::id())->where('user_type', 'pengguna')->exists();
                 @endphp
-
-                <button id="btn-dukung" onclick="tambahDukungan({{ $laporan->id }})" 
-                        class="flex items-center gap-2 transition focus:outline-none {{ $isLiked ? 'text-[#145D71]' : 'hover:text-[#145D71]' }}">
+                <button id="btn-dukung" onclick="tambahDukungan({{ $laporan->id }})" class="flex items-center gap-2 transition focus:outline-none {{ $isLiked ? 'text-[#3996AF]' : 'hover:text-[#3996AF]' }}">
                     <i class="{{ $isLiked ? 'ri-thumb-up-fill' : 'ri-thumb-up-line' }} text-lg" id="icon-dukung"></i> 
                     Mendukung <span id="count-dukung">{{ $laporan->jumlah_dukungan }}</span>
                 </button>
                 
-                <button onclick="bagikanLaporan()" class="flex items-center gap-2 hover:text-[#145D71] transition ml-auto focus:outline-none">
+                <button onclick="bagikanLaporan()" class="flex items-center gap-2 hover:text-[#3996AF] transition ml-auto focus:outline-none">
                     <i class="ri-share-forward-line text-lg"></i> Bagikan
                 </button>
             </div>
 
             <div id="section-tindak-lanjut" class="bg-white px-8 py-6 border-b border-gray-200 hidden transition-all duration-300">
-                
                 <h3 class="font-bold text-gray-800 mb-4">Riwayat Tindak Lanjut</h3>
                 
-                @if($laporan->status != 'selesai')
-                <form action="{{ route('instansi.laporan.tindak-lanjut', $laporan->id) }}" method="POST" class="mb-8 bg-blue-50 p-4 rounded-xl border border-blue-100">
-                    @csrf
-                    <label class="block text-sm font-bold text-blue-800 mb-2">Tambah Progres Tindak Lanjut:</label>
-                    <textarea name="isi_tindak_lanjut" rows="3" class="w-full p-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm" placeholder="Jelaskan langkah apa yang sudah dilakukan... (Contoh: Tim sudah turun ke lokasi)" required></textarea>
-                    <div class="text-right mt-2">
-                        <button type="submit" class="bg-[#145D71] hover:bg-[#0F4C5C] text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm">
-                            Kirim Update
-                        </button>
+                @if($laporan->pengguna_id == Auth::id() && $laporan->status != 'selesai' && $laporan->status != 'belum_disetujui')
+                    <div class="mb-8 bg-blue-50 p-4 rounded-xl border border-blue-100">
+                        <form action="{{ route('laporan.tindak-lanjut.store', $laporan->id) }}" method="POST">
+                            @csrf
+                            <label class="block text-sm font-bold text-blue-800 mb-2">Tanggapi Tindak Lanjut Ini:</label>
+                            <textarea name="isi_tindak_lanjut" rows="2" class="w-full p-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm" placeholder="Contoh: Terima kasih, tim sudah tiba di lokasi..." required></textarea>
+                            <div class="text-right mt-2">
+                                <button type="submit" class="bg-[#3996AF] hover:bg-[#2C7A90] text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm">
+                                    Kirim Tanggapan
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
                 @endif
 
                 <div class="space-y-6">
@@ -112,68 +114,63 @@
                                 @if($tl->instansi_nama == 'Admin SuaraGO')
                                     @php
                                         $adminData = \App\Models\Admin::first();
-                                        $fotoAdmin = $adminData && $adminData->profile_photo_path 
-                                            ? asset('storage/' . $adminData->profile_photo_path) 
-                                            : asset('assets/images/profil-admin.jpg');
+                                        $foto = $adminData && $adminData->profile_photo_path ? asset('storage/' . $adminData->profile_photo_path) : asset('assets/images/profil-admin.jpg');
                                     @endphp
-                                    <img src="{{ $fotoAdmin }}" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                    <img src="{{ $foto }}" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                
+                                @elseif($tl->instansi_nama == 'Tanggapan Pelapor')
+                                    <img src="{{ Auth::user()->profile_photo_path ? asset('storage/' . Auth::user()->profile_photo_path) : asset('assets/images/profil-pengguna.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                
                                 @else
-                                    <img src="{{ asset('assets/images/gorontalo.png') }}" class="w-10 h-10 object-contain border border-gray-100 rounded-full p-1">
+                                    <img src="{{ asset('assets/images/logo-icon.png') }}" class="w-10 h-10 object-contain border border-gray-100 rounded-full p-1">
                                 @endif
                             </div>
 
                             <div class="flex-1">
                                 <div class="flex justify-between items-start">
-                                    <h4 class="font-bold text-gray-900 text-base">{{ $tl->instansi_nama }}</h4>
+                                    <h4 class="font-bold text-gray-900 text-base">
+                                        @if($tl->instansi_nama == 'Tanggapan Pelapor')
+                                            {{ Auth::user()->full_name }} <span class="text-xs text-gray-500 font-normal">(Anda)</span>
+                                        @else
+                                            {{ $tl->instansi_nama }}
+                                        @endif
+                                    </h4>
                                     <span class="text-xs text-gray-400 mt-1">{{ \Carbon\Carbon::parse($tl->waktu_tindak_lanjut)->format('d M, H:i') }}</span>
                                 </div>
                                 <p class="text-gray-600 text-sm mt-1 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                    @php
-                                        $isi = $tl->isi_tindak_lanjut;
-                                        $isi = str_replace('Laporan didisposisikan ke', 'Laporan didisposisikan ke <span class="font-bold text-gray-800">', $isi);
-                                        if(str_contains($isi, '<span')) $isi .= '</span>'; 
-                                    @endphp
-                                    {!! nl2br($isi) !!}
+                                    {!! nl2br(e($tl->isi_tindak_lanjut)) !!}
                                 </p>
                             </div>
                         </div>
                         <hr class="border-gray-50 last:hidden">
                     @empty
-                        <p class="text-center text-gray-500 text-sm italic">Belum ada riwayat.</p>
+                        <p class="text-center text-gray-500 text-sm italic">Belum ada riwayat tindak lanjut.</p>
                     @endforelse
                 </div>
             </div>
 
             <div id="section-komentar" class="bg-white px-8 py-6 hidden transition-all duration-300 border-b border-gray-200">
-                <h3 class="font-bold text-gray-800 mb-4">Komentar</h3>
+                <h3 class="font-bold text-gray-800 mb-4">Diskusi & Komentar</h3>
                 
                 <div id="list-komentar" class="space-y-6 mb-6 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
                     @forelse($laporan->komentars as $komen)
                         <div class="flex gap-3">
-                            
                             @if($komen->peran == 'instansi')
-                                <img src="{{ asset('assets/images/gorontalo.png') }}" class="w-8 h-8 rounded-full border border-gray-200 object-contain p-1">
-                            
+                                <img src="{{ asset('assets/images/logo-icon.png') }}" class="w-8 h-8 rounded-full border border-gray-200 object-contain p-1">
                             @elseif($komen->peran == 'admin')
                                 @php
-                                    $adminUser = \App\Models\Admin::where('full_name', $komen->nama_pengomentar)->first();
-                                    $adminPhoto = $adminUser && $adminUser->profile_photo_path 
-                                        ? asset('storage/' . $adminUser->profile_photo_path) 
-                                        : asset('assets/images/profil-admin.jpg');
+                                    $adminData = \App\Models\Admin::where('full_name', $komen->nama_pengomentar)->first();
+                                    $foto = $adminData && $adminData->profile_photo_path ? asset('storage/' . $adminData->profile_photo_path) : asset('assets/images/profil-admin.jpg');
                                 @endphp
-                                <img src="{{ $adminPhoto }}" class="w-8 h-8 rounded-full border border-gray-200 object-cover">
-                            
+                                <img src="{{ $foto }}" class="w-8 h-8 rounded-full border border-gray-200 object-cover">
                             @else
-                                <img src="{{ $komen->pengguna && $komen->pengguna->profile_photo_path 
-                                            ? asset('storage/' . $komen->pengguna->profile_photo_path) 
-                                            : asset('assets/images/profil-pengguna.jpg') }}" 
-                                     class="w-8 h-8 rounded-full border border-gray-200 object-cover">
+                                <img src="{{ $komen->pengguna && $komen->pengguna->profile_photo_path ? asset('storage/' . $komen->pengguna->profile_photo_path) : asset('assets/images/profil-pengguna.jpg') }}" class="w-8 h-8 rounded-full border border-gray-200 object-cover">
                             @endif
 
                             <div class="flex-1">
                                 <div class="bg-gray-100 rounded-2xl px-4 py-2 inline-block max-w-[90%]">
                                     <h4 class="font-bold text-xs text-gray-900 mb-1">
-                                        {{ $komen->nama_pengomentar ?? 'Pengguna' }}
+                                        {{ $komen->nama_pengomentar }}
                                         @if($komen->peran == 'instansi') <i class="ri-building-4-fill text-green-600 ml-1"></i> @endif
                                         @if($komen->peran == 'admin') <i class="ri-verified-badge-fill text-blue-500 ml-1"></i> @endif
                                     </h4>
@@ -188,34 +185,17 @@
                 </div>
 
                 <div class="flex gap-3 items-center border-t border-gray-100 pt-4">
-                    <img src="{{ asset('assets/images/gorontalo.png') }}" class="w-8 h-8 rounded-full border border-gray-200 object-contain p-1">
+                    <img src="{{ Auth::user()->profile_photo_path ? asset('storage/' . Auth::user()->profile_photo_path) : asset('assets/images/profil-pengguna.jpg') }}" class="w-8 h-8 rounded-full border border-gray-200 object-cover">
                     <div class="flex-1 relative">
-                        <input type="text" id="input-komentar" placeholder="Tulis komentar sebagai Instansi..." 
-                               class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-[#145D71] focus:border-[#145D71] block pl-4 pr-12 py-2.5"
+                        <input type="text" id="input-komentar" placeholder="Tulis komentar..." 
+                               class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-[#3996AF] focus:border-[#3996AF] block pl-4 pr-12 py-2.5"
                                onkeypress="if(event.key === 'Enter') kirimKomentar({{ $laporan->id }})">
-                        <button onclick="kirimKomentar({{ $laporan->id }})" class="absolute right-2 top-1/2 -translate-y-1/2 text-[#145D71] hover:text-[#0F4C5C] p-1 rounded-full transition">
+                        <button onclick="kirimKomentar({{ $laporan->id }})" class="absolute right-2 top-1/2 -translate-y-1/2 text-[#3996AF] hover:text-[#2C7A90] p-1 rounded-full transition">
                             <i class="ri-send-plane-fill text-lg"></i>
                         </button>
                     </div>
                 </div>
             </div>
-
-            @if($laporan->status != 'selesai')
-                <div class="p-8 bg-white flex justify-center">
-                    <form id="form-selesai" action="{{ route('instansi.laporan.selesai', $laporan->id) }}" method="POST" class="w-full">
-                        @csrf
-                        <button type="button" onclick="konfirmasiSelesai()" class="w-full py-3.5 bg-[#27AE60] hover:bg-[#219150] text-white font-bold rounded-xl shadow-md transition-all text-lg flex justify-center items-center gap-2">
-                            <i class="ri-check-double-line"></i> Selesaikan Laporan
-                        </button>
-                    </form>
-                </div>
-            @else
-                <div class="p-6 bg-green-50 text-center border-t border-green-100">
-                    <span class="text-green-700 font-bold flex items-center justify-center gap-2">
-                        <i class="ri-checkbox-circle-fill text-xl"></i> Laporan Telah Diselesaikan
-                    </span>
-                </div>
-            @endif
 
         </div>
     </div>
@@ -238,7 +218,7 @@
         const icon = document.getElementById('icon-dukung');
         const counter = document.getElementById('count-dukung');
 
-        fetch(`/instansi/laporan/${id}/dukung`, {
+        fetch(`/laporan/${id}/dukung`, {
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' }
         })
@@ -248,10 +228,12 @@
                 counter.textContent = data.new_count;
                 if(data.status === 'liked') {
                     icon.classList.replace('ri-thumb-up-line', 'ri-thumb-up-fill');
-                    btn.classList.add('text-[#145D71]');
+                    btn.classList.replace('hover:text-[#3996AF]', 'text-[#3996AF]');
+                    btn.classList.add('text-[#3996AF]');
                 } else {
                     icon.classList.replace('ri-thumb-up-fill', 'ri-thumb-up-line');
-                    btn.classList.remove('text-[#145D71]');
+                    btn.classList.remove('text-[#3996AF]');
+                    btn.classList.add('hover:text-[#3996AF]');
                 }
             }
         });
@@ -264,7 +246,7 @@
         if(!isi) return;
         input.disabled = true;
 
-        fetch(`/instansi/laporan/${id}/komentar`, {
+        fetch(`/laporan/${id}/komentar`, {
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' },
             body: JSON.stringify({ isi_komentar: isi })
@@ -274,12 +256,10 @@
             if(data.success) {
                 const html = `
                     <div class="flex gap-3 animate-pulse">
-                        <img src="{{ asset('assets/images/logo-icon.png') }}" class="w-8 h-8 rounded-full border border-gray-200 p-1 object-contain">
+                        <img src="${data.komentar.foto}" class="w-8 h-8 rounded-full border border-gray-200 object-cover">
                         <div class="flex-1">
                             <div class="bg-gray-100 rounded-2xl px-4 py-2 inline-block max-w-[90%]">
-                                <h4 class="font-bold text-xs text-gray-900 mb-1">
-                                    ${data.komentar.nama} <i class="ri-building-4-fill text-green-600 ml-1"></i>
-                                </h4>
+                                <h4 class="font-bold text-xs text-gray-900 mb-1">${data.komentar.nama}</h4>
                                 <p class="text-sm text-gray-800">${data.komentar.isi}</p>
                             </div>
                             <div class="text-xs text-gray-400 mt-1 ml-2">Barusan</div>
@@ -296,20 +276,6 @@
 
     function bagikanLaporan() {
         Swal.fire({ title: 'Bagikan', text: 'Fitur bagikan belum aktif', icon: 'info' });
-    }
-
-    function konfirmasiSelesai() {
-        Swal.fire({
-            title: 'Selesaikan Laporan?',
-            text: "Pastikan masalah di lapangan benar-benar sudah teratasi.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#27AE60',
-            confirmButtonText: 'Ya, Selesai!',
-            cancelButtonText: 'Batal'
-        }).then((r) => {
-            if (r.isConfirmed) document.getElementById('form-selesai').submit();
-        });
     }
 </script>
 <style>
