@@ -112,7 +112,7 @@
                                 
                                 @if($tl->instansi_nama == 'Tanggapan Pelapor')
                                     @if($laporan->visibilitas == 'anonim')
-                                        <img src="{{ asset('assets/images/logo-icon.png') }}" class="w-10 h-10 rounded-full border border-gray-200 object-contain p-1">
+                                        <img src="{{ asset('assets/images/gorontalo.png') }}" class="w-10 h-10 rounded-full border border-gray-200 object-contain p-1">
                                     @else
                                         <img src="{{ $laporan->pengguna->profile_photo_path ? asset('storage/' . $laporan->pengguna->profile_photo_path) : asset('assets/images/profil-pengguna.jpg') }}" 
                                              class="w-10 h-10 rounded-full object-cover border border-gray-200">

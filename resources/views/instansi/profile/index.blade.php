@@ -10,7 +10,7 @@
         <div class="pt-12 pb-8 flex flex-col items-center bg-gray-50 border-b border-gray-100">
             <div class="relative mb-4">
                 <div class="p-1 rounded-full bg-gradient-to-tr from-[#145D71] to-[#2ECC71]">
-                    <img src="{{ $instansi->foto_profil ? asset('storage/' . $instansi->foto_profil) : asset('assets/images/logo-icon.png') }}" 
+                    <img src="{{ $instansi->foto_profil ? asset('storage/' . $instansi->foto_profil) : asset('assets/images/gorontalo.png') }}" 
                          alt="Instansi Avatar" 
                          class="w-32 h-32 rounded-full object-cover border-4 border-white bg-white">
                 </div>

@@ -20,7 +20,7 @@
         <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 w-72 bg-[#145D71] text-white flex flex-col z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 shadow-xl">
             
             <div class="flex items-center gap-3 px-6 h-20 bg-[#0F4C5C] border-b border-[#0F4C5C]/50 flex-shrink-0">
-                <img src="{{ asset('assets/images/logo-icon.png') }}" alt="Logo" class="w-8 h-8 object-contain brightness-200">
+                <img src="{{ asset('assets/images/logo icon.png') }}" alt="Logo" class="w-8 h-8 object-contain brightness-100">
                 <h1 class="text-xl font-bold tracking-wide">Instansi</h1>
             </div>
             
@@ -69,7 +69,7 @@
                 
                 <div class="flex items-center gap-4">
                     <a href="{{ route('instansi.profil.index') }}" class="flex items-center gap-3 group cursor-pointer">
-                        <img src="{{ Auth::guard('instansi')->user()->foto_profil ? asset('storage/' . Auth::guard('instansi')->user()->foto_profil) : asset('assets/images/logo-icon.png') }}" 
+                        <img src="{{ Auth::guard('instansi')->user()->foto_profil ? asset('storage/' . Auth::guard('instansi')->user()->foto_profil) : asset('assets/images/gorontalo.png') }}" 
                              class="w-10 h-10 rounded-full object-cover bg-gray-100 border border-gray-200 group-hover:border-[#145D71] transition">
                         
                         <div class="hidden md:block text-left">
