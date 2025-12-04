@@ -297,79 +297,71 @@
         {{-- Section Laporan Terhangat --}}
         <section id="laporan-terhangat" class="py-20 bg-white">
             <div class="container mx-auto w-full px-5 md:px-20">
-                <h2 class="text-3xl lg:text-4xl font-bold text-center text-gray-800 mb-12">
-                    Laporan Terhangat
-                </h2>
-                
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @forelse($laporanTerhangat as $laporan)
-                <a href="{{ route('laporan.show', $laporan->id) }}" class="block group relative -top-[20px] hover:top-[-25px] transition-all duration-300">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-full flex flex-colhover:shadow-md transition-shadow">
-                        
-                        <div class="p-4 flex items-center gap-3 border-b border-gray-50">
-                            <img src="{{ $laporan->visibilitas == 'anonim' ? asset('assets/images/logo-icon.png') : ($laporan->pengguna->profile_photo_path ? asset('storage/'.$laporan->pengguna->profile_photo_path) : asset('assets/images/profil-pengguna.jpg')) }}" 
-                                 class="w-9 h-9 rounded-full object-cover border border-gray-100">
-                            <div class="flex-1 truncate">
-                                <h4 class="text-sm font-bold text-gray-800 truncate">
-                                    {{ $laporan->visibilitas == 'anonim' ? 'Anonim' : explode(' ', $laporan->pengguna->full_name)[0] }}
-                                </h4>
-                                <p class="text-xs text-gray-400">{{ $laporan->created_at->diffForHumans() }}</p>
-                            </div>
-                            <div class="flex-shrink-0">
-                                @if($laporan->tipe_laporan == 'pengaduan')
-                                    <span class="text-[10px] font-bold bg-red-50 text-red-600 px-2 py-0.5 rounded border border-red-100">PENGADUAN</span>
-                                @else
-                                    <span class="text-[10px] font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded border border-blue-100">ASPIRASI</span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="p-4 flex-1 flex flex-col">
-                            <h3 class="font-bold text-base text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors leading-snug">
-                                {{ $laporan->judul }}
-                            </h3>
-                            <p class="text-gray-600 text-sm line-clamp-3 leading-relaxed mb-3 flex-1">
-                                {{ $laporan->isi_laporan }}
-                            </p>
-                            
-                            <div class="flex items-center gap-1 text-xs text-gray-500 bg-gray-50 p-1.5 rounded w-fit max-w-full mt-auto">
-                                <i class="ri-building-4-line flex-shrink-0"></i>
-                                <span class="truncate">{{ $laporan->instansi_tujuan }}</span>
-                            </div>
-                        </div>
-
-                        <div class="px-4 py-3 bg-gray-50 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
-                            <div class="flex gap-3 items-center">
-                                <span class="flex items-center gap-1 text-blue-600 font-bold bg-blue-50 px-1.5 py-0.5 rounded" title="Dilihat">
-                                    <i class="ri-eye-fill"></i> {{ number_format($laporan->jumlah_dilihat) }}
-                                </span>
-                                <span class="flex items-center gap-1" title="Dukungan">
-                                    <i class="ri-thumb-up-line"></i> {{ $laporan->jumlah_dukungan }}
-                                </span>
-                                <span class="flex items-center gap-1" title="Komentar">
-                                    <i class="ri-chat-1-line"></i> {{ $laporan->komentars_count }}
-                                </span>
-                            </div>
-                            
-                            <div>
-                                @if($laporan->status == 'selesai')
-                                    <span class="font-bold text-green-600 flex items-center gap-1"><i class="ri-checkbox-circle-fill"></i> Selesai</span>
-                                @elseif($laporan->status == 'diproses')
-                                    <span class="font-bold text-yellow-600 flex items-center gap-1"><i class="ri-loader-4-fill"></i> Diproses</span>
-                                @endif
-                            </div>
-                        </div>
-
-                    </div>
-                </a>
-            @empty
-                <div class="col-span-full text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-                    <i class="ri-fire-line text-4xl text-gray-300 mb-3 block"></i>
-                    <p class="text-gray-500 font-medium">Belum ada laporan yang cukup hangat untuk ditampilkan.</p>
-                    <p class="text-sm text-gray-400 mt-1">Jadilah yang pertama berpartisipasi!</p>
+                <div class="mb-10">
+                    <h2 class="text-3xl font-bold text-gray-900">Laporan <span class="text-[#3996AF]">Terhangat</span></h2>
                 </div>
-            @endforelse
-        </div>
+                
+                <div class="flex flex-col gap-6">
+                    @forelse($laporanTerhangat as $laporan)
+                        <div class="group relative bg-white border-b border-gray-100 pb-6 hover:bg-gray-50 transition-colors rounded-xl p-4">
+                            
+                            <a href="{{ route('laporan.show', $laporan->id) }}" class="absolute inset-0 z-10"></a>
+
+                            <div class="flex flex-col md:flex-row gap-4 md:gap-6">
+                                
+                                <div class="flex-1 order-2 md:order-1">
+                                    <h3 class="font-bold text-lg text-gray-900 mb-2 leading-tight group-hover:text-[#3996AF] transition-colors">
+                                        {{ $laporan->judul }}
+                                    </h3>
+                                    
+                                    <p class="text-gray-600 text-sm mb-3 line-clamp-2 leading-relaxed">
+                                        {{ $laporan->isi_laporan }}
+                                        <span class="text-[#3996AF] font-medium">Baca lebih Lanjut</span>
+                                    </p>
+
+                                    <div class="flex items-center flex-wrap gap-4 text-xs text-gray-500">
+                                        
+                                        <div class="flex items-center gap-2">
+                                            <img src="{{ $laporan->visibilitas == 'anonim' ? asset('assets/images/logo-icon.png') : ($laporan->pengguna->profile_photo_path ? asset('storage/'.$laporan->pengguna->profile_photo_path) : asset('assets/images/profil-pengguna.jpg')) }}" 
+                                                 class="w-6 h-6 rounded-full object-cover border border-gray-200">
+                                            <span class="font-medium text-gray-700">
+                                                {{ $laporan->visibilitas == 'anonim' ? 'Anonim' : explode(' ', $laporan->pengguna->full_name)[0] }}
+                                            </span>
+                                        </div>
+
+                                        <div class="flex items-center gap-4 ml-auto md:ml-0">
+                                            <span class="flex items-center gap-1">
+                                                <i class="ri-loop-left-line"></i> Tindak Lanjut {{ $laporan->tindakLanjuts->count() }}
+                                            </span>
+                                            
+                                            <span class="flex items-center gap-1">
+                                                <i class="ri-chat-1-line"></i> Komentar {{ $laporan->komentars->count() }}
+                                            </span>
+
+                                            <span class="flex items-center gap-1">
+                                                <i class="ri-thumb-up-line"></i> Mendukung {{ $laporan->jumlah_dukungan }}
+                                            </span>
+
+                                            <span class="flex items-center gap-1">
+                                                <i class="ri-eye-line"></i> {{ \Illuminate\Support\Str::limit($laporan->jumlah_dilihat, 4, 'rb') }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-xs text-gray-400 whitespace-nowrap order-1 md:order-2">
+                                    {{ $laporan->created_at->diffForHumans() }}
+                                </div>
+
+                            </div>
+                        </div>
+
+                    @empty
+                        <div class="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                            <p class="text-gray-500">Belum ada laporan terhangat.</p>
+                        </div>
+                    @endforelse
+                </div>
             </div>
         </section>
     </main>

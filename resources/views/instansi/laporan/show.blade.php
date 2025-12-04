@@ -106,17 +106,25 @@
                 @endif
 
                 <div class="space-y-6">
-                    @forelse($laporan->tindakLanjuts()->latest()->get() as $tl)
+                   @forelse($laporan->tindakLanjuts()->latest()->get() as $tl)
                         <div class="flex gap-4">
                             <div class="flex-shrink-0">
-                                @if($tl->instansi_nama == 'Admin SuaraGO')
-                                    @php
+                                
+                                @if($tl->instansi_nama == 'Tanggapan Pelapor')
+                                    @if($laporan->visibilitas == 'anonim')
+                                        <img src="{{ asset('assets/images/logo-icon.png') }}" class="w-10 h-10 rounded-full border border-gray-200 object-contain p-1">
+                                    @else
+                                        <img src="{{ $laporan->pengguna->profile_photo_path ? asset('storage/' . $laporan->pengguna->profile_photo_path) : asset('assets/images/profil-pengguna.jpg') }}" 
+                                             class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                    @endif
+
+                                @elseif($tl->instansi_nama == 'Admin SuaraGO')
+                                     @php
                                         $adminData = \App\Models\Admin::first();
-                                        $fotoAdmin = $adminData && $adminData->profile_photo_path 
-                                            ? asset('storage/' . $adminData->profile_photo_path) 
-                                            : asset('assets/images/profil-admin.jpg');
+                                        $fotoAdmin = $adminData && $adminData->profile_photo_path ? asset('storage/' . $adminData->profile_photo_path) : asset('assets/images/profil-admin.jpg');
                                     @endphp
                                     <img src="{{ $fotoAdmin }}" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                
                                 @else
                                     <img src="{{ asset('assets/images/gorontalo.png') }}" class="w-10 h-10 object-contain border border-gray-100 rounded-full p-1">
                                 @endif
@@ -124,16 +132,21 @@
 
                             <div class="flex-1">
                                 <div class="flex justify-between items-start">
-                                    <h4 class="font-bold text-gray-900 text-base">{{ $tl->instansi_nama }}</h4>
+                                    <h4 class="font-bold text-gray-900 text-base">
+                                        @if($tl->instansi_nama == 'Tanggapan Pelapor')
+                                            @if($laporan->visibilitas == 'anonim')
+                                                Anonim <span class="text-xs text-gray-500 font-normal">(Pelapor)</span>
+                                            @else
+                                                {{ $laporan->pengguna->full_name }} <span class="text-xs text-gray-500 font-normal">(Pelapor)</span>
+                                            @endif
+                                        @else
+                                            {{ $tl->instansi_nama }}
+                                        @endif
+                                    </h4>
                                     <span class="text-xs text-gray-400 mt-1">{{ \Carbon\Carbon::parse($tl->waktu_tindak_lanjut)->format('d M, H:i') }}</span>
                                 </div>
                                 <p class="text-gray-600 text-sm mt-1 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                    @php
-                                        $isi = $tl->isi_tindak_lanjut;
-                                        $isi = str_replace('Laporan didisposisikan ke', 'Laporan didisposisikan ke <span class="font-bold text-gray-800">', $isi);
-                                        if(str_contains($isi, '<span')) $isi .= '</span>'; 
-                                    @endphp
-                                    {!! nl2br($isi) !!}
+                                    {!! nl2br(e($tl->isi_tindak_lanjut)) !!}
                                 </p>
                             </div>
                         </div>
