@@ -111,7 +111,7 @@
                             <span class="font-mono">#{{ $item->id }}</span>
                         </div>
                         <span class="bg-[#FFC107] text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
-                            Sedang Diproses
+                            {{ $item->status }}
                         </span>
                     </div>
                     

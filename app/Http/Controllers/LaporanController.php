@@ -62,14 +62,11 @@ class LaporanController extends Controller
     public function show($id)
     {
         $laporan = Laporan::with(['pengguna', 'komentars', 'tindakLanjuts'])->findOrFail($id);
-        
-        // Tambah jumlah dilihat setiap kali dibuka
         $laporan->increment('jumlah_dilihat');
 
         return view('laporan.show', compact('laporan'));
     }
 
-    // Method KIRIM KOMENTAR
     public function storeKomentar(Request $request, $id)
     {
         $request->validate(['isi_komentar' => 'required|string|max:500']);
@@ -78,10 +75,10 @@ class LaporanController extends Controller
 
         $komentar = Komentar::create([
             'laporan_id' => $id,
-            'pengguna_id' => $user->id, // ID Pengguna yang login
+            'pengguna_id' => $user->id, 
             'nama_pengomentar' => $user->full_name,
             'isi_komentar' => $request->isi_komentar,
-            'peran' => 'pengguna', // Penanda peran
+            'peran' => 'pengguna', 
         ]);
 
         return response()->json([

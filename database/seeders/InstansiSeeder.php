@@ -11,13 +11,13 @@ class InstansiSeeder extends Seeder
     public function run(): void
     {
         Instansi::create([
-            'username' => 'kota',
-            'password' => Hash::make('kotagorontalo'),
-            'full_name' => 'Admin kota gorontalo',
-            'email' => 'kotagorontalo@gorontalo.go.id',
-            'instance_name' => 'Pemerintah Kota Gorontalo',
+            'username' => 'provinsi',
+            'password' => Hash::make('provinsi'),
+            'full_name' => 'Admin provinsi gorontalo',
+            'email' => 'provinsigorontalo@gorontalo.go.id',
+            'instance_name' => 'Pemerintah Provinsi Gorontalo',
             'phone_number' => '081234567890',
-            'nip' => '198501012010011002',
+            'nip' => '198501012010011003',
             'address' => 'Jl. Apel No. 10, Gorontalo'
         ]);
     }

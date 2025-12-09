@@ -72,9 +72,11 @@
                         </span>
                     </td>
                     <td class="px-6 py-4">
-                        <button class="px-3 py-1.5 bg-[#3282B8] text-white rounded-md text-xs font-semibold hover:bg-[#1B6CA8] transition-colors">
+                        <a href="{{  route('admin.laporan.show', $laporan->id)  }}">
+                        <button  class="px-3 py-1.5 bg-[#3282B8] text-white rounded-md text-xs font-semibold hover:bg-[#1B6CA8] transition-colors">
                             Lihat Detail
                         </button>
+                        </a>
                     </td>
                 </tr>
                 @empty
