@@ -10,15 +10,14 @@ class InstansiSeeder extends Seeder
 {
     public function run(): void
     {
-        // Contoh Akun untuk Kecamatan Dungingi
         Instansi::create([
-            'username' => 'dungingi',
-            'password' => Hash::make('dungingi'),
-            'full_name' => 'Admin Kecamatan Dungingi',
-            'email' => 'dungingi@gorontalo.go.id',
-            'instance_name' => 'Pemerintah Kecamatan Dungingi, Kota Gorontalo',
+            'username' => 'kota',
+            'password' => Hash::make('kotagorontalo'),
+            'full_name' => 'Admin kota gorontalo',
+            'email' => 'kotagorontalo@gorontalo.go.id',
+            'instance_name' => 'Pemerintah Kota Gorontalo',
             'phone_number' => '081234567890',
-            'nip' => '198501012010011001',
+            'nip' => '198501012010011002',
             'address' => 'Jl. Apel No. 10, Gorontalo'
         ]);
     }

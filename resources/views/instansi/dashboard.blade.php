@@ -55,10 +55,8 @@
     </div>
 </div>
 
-<div class="mb-12">
-    <h3 class="text-xl font-bold text-gray-800 text-center mb-6 flex items-center justify-center gap-2">
-        <i class="ri-file-warning-fill text-[#C0392B]"></i> Daftar Laporan Pengaduan
-    </h3>
+<div class="mb-12" id="section-pengaduan">
+    <h3 class="text-xl font-bold text-gray-800 text-center mb-6 flex items-center justify-center gap-2"> Daftar Laporan Pengaduan</h3>
     
     <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
         @forelse($daftarLaporan as $item)
@@ -98,10 +96,8 @@
     </div>
 </div>
 
-<div class="mb-12">
-    <h3 class="text-xl font-bold text-gray-800 text-center mb-6 flex items-center justify-center gap-2">
-        <i class="ri-lightbulb-fill text-[#F1C40F]"></i> Daftar Aspirasi Masyarakat
-    </h3>
+<div class="mb-12" id="section-aspirasi">
+    <h3 class="text-xl font-bold text-gray-800 text-center mb-6 flex items-center justify-center gap-2"> Daftar Aspirasi Masyarakat</h3>
     
     <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
         @forelse($daftarAspirasi as $item)

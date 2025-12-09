@@ -21,7 +21,7 @@
                 <div class="flex items-start justify-between">
                     <div class="flex gap-4">
                         <img src="{{ $laporan->visibilitas == 'anonim' 
-                                    ? asset('assets/images/logo-icon.png') 
+                                    ? asset('assets/images/profil-pengguna.jpg') 
                                     : ($laporan->pengguna->profile_photo_path ? asset('storage/' . $laporan->pengguna->profile_photo_path) : asset('assets/images/profil-pengguna.jpg')) }}" 
                              class="w-14 h-14 rounded-full object-cover border border-gray-200">
                         
@@ -70,7 +70,6 @@
                 </button>
 
                 @php 
-                    // Cek Database: Apakah Instansi ini sudah like laporan ini?
                     $isLiked = \App\Models\Dukungan::where('laporan_id', $laporan->id)
                         ->where('user_id', Auth::guard('instansi')->user()->gid)
                         ->where('user_type', 'instansi')
@@ -112,7 +111,7 @@
                                 
                                 @if($tl->instansi_nama == 'Tanggapan Pelapor')
                                     @if($laporan->visibilitas == 'anonim')
-                                        <img src="{{ asset('assets/images/gorontalo.png') }}" class="w-10 h-10 rounded-full border border-gray-200 object-contain p-1">
+                                        <img src="{{ asset('assets/images/profil-pengguna.jpg') }}" class="w-10 h-10 rounded-full border border-gray-200 object-contain p-1">
                                     @else
                                         <img src="{{ $laporan->pengguna->profile_photo_path ? asset('storage/' . $laporan->pengguna->profile_photo_path) : asset('assets/images/profil-pengguna.jpg') }}" 
                                              class="w-10 h-10 rounded-full object-cover border border-gray-200">

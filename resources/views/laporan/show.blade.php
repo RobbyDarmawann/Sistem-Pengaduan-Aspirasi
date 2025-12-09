@@ -21,7 +21,7 @@
                 <div class="flex items-start justify-between">
                     <div class="flex gap-4">
                         <img src="{{ $laporan->visibilitas == 'anonim' 
-                                    ? asset('assets/images/logo-icon.png') 
+                                    ? asset('assets/images/profil-pengguna.jpg') 
                                     : ($laporan->pengguna->profile_photo_path ? asset('storage/' . $laporan->pengguna->profile_photo_path) : asset('assets/images/profil-pengguna.jpg')) }}" 
                              class="w-14 h-14 rounded-full object-cover border border-gray-200">
                         
@@ -138,7 +138,7 @@
                                 @elseif($tl->instansi_nama == 'Tanggapan Pelapor')
                                     <img src="{{ $laporan->pengguna->profile_photo_path ? asset('storage/' . $laporan->pengguna->profile_photo_path) : asset('assets/images/profil-pengguna.jpg') }}" class="w-10 h-10 rounded-full object-cover border border-gray-200">
                                 @else
-                                    <img src="{{ asset('assets/images/logo-icon.png') }}" class="w-10 h-10 object-contain border border-gray-100 rounded-full p-1">
+                                    <img src="{{ asset('assets/images/gorontalo.png') }}" class="w-10 h-10 object-contain border border-gray-100 rounded-full p-1">
                                 @endif
                             </div>
                             <div class="flex-1">

@@ -101,7 +101,7 @@
                         <div class="bg-white rounded-xl border-2 border-[#5D9FD6] p-4 flex flex-col md:flex-row gap-4 items-center relative shadow-sm group-hover:shadow-md transition transform group-hover:-translate-y-1">
                             
                             <div class="flex flex-col items-center w-24 flex-shrink-0">
-                                <img src="{{ $item->visibilitas == 'anonim' ? asset('assets/images/logo-icon.png') : ($user->profile_photo_path ? asset('storage/'.$user->profile_photo_path) : asset('assets/images/profil-pengguna.jpg')) }}" 
+                                <img src="{{ $item->visibilitas == 'anonim' ? asset('assets/images/profil-pengguna.jpg') : ($user->profile_photo_path ? asset('storage/'.$user->profile_photo_path) : asset('assets/images/profil-pengguna.jpg')) }}" 
                                      class="w-16 h-16 rounded-full object-cover border border-gray-300 mb-2">
                                 <span class="text-sm font-bold text-gray-700 text-center break-words w-full">
                                     {{ $item->visibilitas == 'anonim' ? 'Anonim' : explode(' ', $user->full_name)[0] }}

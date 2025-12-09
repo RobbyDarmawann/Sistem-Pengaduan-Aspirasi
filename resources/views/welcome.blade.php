@@ -154,7 +154,6 @@
             </div>
         </section>
 
-        {{-- Section Masuk (Hanya Tampil Jika Belum Login) --}}
         @guest
         <section id="masuk" class="py-20 bg-gray-50"> 
             <div class="container mx-auto px-5">
@@ -294,7 +293,6 @@
             </div>
         </section>
 
-        {{-- Section Laporan Terhangat --}}
         <section id="laporan-terhangat" class="py-20 bg-white">
             <div class="container mx-auto w-full px-5 md:px-20">
                 <div class="mb-10">
@@ -322,7 +320,7 @@
                                     <div class="flex items-center flex-wrap gap-4 text-xs text-gray-500">
                                         
                                         <div class="flex items-center gap-2">
-                                            <img src="{{ $laporan->visibilitas == 'anonim' ? asset('assets/images/logo-icon.png') : ($laporan->pengguna->profile_photo_path ? asset('storage/'.$laporan->pengguna->profile_photo_path) : asset('assets/images/profil-pengguna.jpg')) }}" 
+                                            <img src="{{ $laporan->visibilitas == 'anonim' ? asset('assets/images/profil-pengguna.jpg') : ($laporan->pengguna->profile_photo_path ? asset('storage/'.$laporan->pengguna->profile_photo_path) : asset('assets/images/profil-pengguna.jpg')) }}" 
                                                  class="w-6 h-6 rounded-full object-cover border border-gray-200">
                                             <span class="font-medium text-gray-700">
                                                 {{ $laporan->visibilitas == 'anonim' ? 'Anonim' : explode(' ', $laporan->pengguna->full_name)[0] }}
